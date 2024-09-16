@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 import { FileReader } from './file-reader.interface.js';
-import { Offer, HouseType, User, City } from '../../types/index.js';
+import { Offer, HouseType, City, Good, Location } from '../../types/index.js';
 
 export class TSVFileReader implements FileReader {
   private rawData = '';
@@ -34,14 +34,15 @@ export class TSVFileReader implements FileReader {
       isPremium,
       isFavorite,
       rating,
-      type,
+      houseType,
       bedrooms,
       guests,
       price,
       goods,
       authorEmail,
       commentsCount,
-      location,
+      latitude,
+      longitude,
     ] = line.split('\t');
 
     return {
@@ -54,13 +55,21 @@ export class TSVFileReader implements FileReader {
       isPremium: (isPremium === 'true'),
       isFavorite: (isFavorite === 'true'),
       rating: this.parseRating(rating),
-      type: HouseType[type as 'Apartment' | 'House' | 'Room' | 'Hotel'],
+      type: HouseType[houseType as 'apartment' | 'house' | 'room' | 'hotel'],
       bedrooms: Number.parseInt(bedrooms, 10),
       guests: Number.parseInt(guests, 10),
-
-      categories: this.parseCategories(categories),
       price: this.parsePrice(price),
-      user: this.parseUser(firstname, lastname, email, avatarPath),
+      authorEmail,
+      commentsCount: this.parseCommentsCount(commentsCount),
+      goods: this.parseGoods(goods),
+      location: this.parseLocation(latitude, longitude),
+    };
+  }
+
+  private parseLocation(latitude: string, longitude: string): Location {
+    return {
+      latitude: Number.parseFloat(latitude),
+      longitude: Number.parseFloat(longitude)
     };
   }
 
@@ -75,19 +84,23 @@ export class TSVFileReader implements FileReader {
   }
 
   private parseImages(imagesString: string): string[] {
-    return imagesString.split(';').map((item) => (item));
+    return imagesString.split(';').map((item) => item);
+  }
+
+  private parseGoods(goodsString: string): Good[] {
+    return goodsString.split(';').map((item) => Good[item as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
   }
 
   private parsePrice(priceString: string): number {
     return Number.parseInt(priceString, 10);
   }
 
-  private parseRating(ratingString: string): number {
-    return Number.parseFloat(ratingString);
+  private parseCommentsCount(commentsCountString: string): number {
+    return Number.parseInt(commentsCountString, 10);
   }
 
-  private parseUser(firstname: string, lastname: string, email: string, avatarPath: string): User {
-    return { email, firstname, lastname, avatarPath };
+  private parseRating(ratingString: string): number {
+    return Number.parseFloat(ratingString);
   }
 
   public read(): void {
