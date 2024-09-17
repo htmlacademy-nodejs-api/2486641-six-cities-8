@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import { FileReader } from './file-reader.interface.js';
 import { Offer, HouseType, City, Good, Location } from '../../types/index.js';
+import { Cities } from '../../../const.js';
 
 export class TSVFileReader implements FileReader {
   private rawData = '';
@@ -52,18 +53,22 @@ export class TSVFileReader implements FileReader {
       city: this.parseCity(cityName),
       previewImage,
       images: this.parseImages(images),
-      isPremium: (isPremium === 'true'),
-      isFavorite: (isFavorite === 'true'),
+      isPremium: this.parseStringToBoolean(isPremium),
+      isFavorite: this.parseStringToBoolean(isFavorite),
       rating: this.parseRating(rating),
       type: HouseType[houseType as 'apartment' | 'house' | 'room' | 'hotel'],
-      bedrooms: Number.parseInt(bedrooms, 10),
-      guests: Number.parseInt(guests, 10),
+      bedroomsCount: this.parseBedroomsCount(bedrooms),
+      guestsCount: this.parseGuestsCount(guests),
       price: this.parsePrice(price),
       authorEmail,
       commentsCount: this.parseCommentsCount(commentsCount),
       goods: this.parseGoods(goods),
       location: this.parseLocation(latitude, longitude),
     };
+  }
+
+  private parseStringToBoolean(value: string): boolean {
+    return (value === 'true');
   }
 
   private parseLocation(latitude: string, longitude: string): Location {
@@ -73,14 +78,21 @@ export class TSVFileReader implements FileReader {
     };
   }
 
+  private parseBedroomsCount(countString: string): number {
+    return Number.parseInt(countString, 10);
+  }
+
+  private parseGuestsCount(countString: string): number {
+    return Number.parseInt(countString, 10);
+  }
+
   private parseCity(cityName: string): City {
-    return {
-      title: cityName,
-      location: {
-        latitude: 0,
-        longitude: 0
+    return Cities.find((item) => {
+      if (item) {
+        return (item.name === cityName);
       }
-    };
+      return undefined;
+    });
   }
 
   private parseImages(imagesString: string): string[] {
@@ -88,6 +100,7 @@ export class TSVFileReader implements FileReader {
   }
 
   private parseGoods(goodsString: string): Good[] {
+    // Оно конечно работает, но код выглядит неоптимальным и плохо читаемым
     return goodsString.split(';').map((item) => Good[item as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
   }
 

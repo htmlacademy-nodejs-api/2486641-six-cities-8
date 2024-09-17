@@ -14,8 +14,8 @@ export type Offer = {
   isFavorite: boolean;
   rating: number;
   type: HouseType;
-  bedrooms: number;
-  guests: number;
+  bedroomsCount: number;
+  guestsCount: number;
   price: number;
   goods: Good[];
   authorEmail: string;

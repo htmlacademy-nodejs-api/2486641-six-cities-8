@@ -1,6 +1,6 @@
 import { Location } from './location.type.js';
 
 export type City = {
-  title: string;
+  name: string;
   location: Location;
-}
+} | undefined;
