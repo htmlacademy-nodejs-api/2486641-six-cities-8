@@ -32,6 +32,15 @@
       "superUser@email.com",
       "bestUser@email.com",
       "awesomUser@email.com"
+    ],
+    "names": [
+      "Ivan",
+      "Petr",
+      "Alexander",
+      "Denis",
+      "Anna",
+      "Anastasia",
+      "Julia"
     ]
   }
 }

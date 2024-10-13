@@ -1,7 +1,6 @@
-import { City } from './city.type.js';
+import { City, User, Location } from './index.js';
 import { Good } from './good.enum.js';
 import { HouseType } from './house-type.enum.js';
-import { Location } from './location.type.js';
 
 export type Offer = {
   title: string;
@@ -18,7 +17,8 @@ export type Offer = {
   guestsCount: number;
   price: number;
   goods: Good[];
-  authorEmail: string;
+  //authorEmail: string;
+  author: User;
   commentsCount: number;
   location: Location;
 }
