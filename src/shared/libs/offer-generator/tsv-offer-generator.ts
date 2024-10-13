@@ -34,6 +34,9 @@ export class TSVOfferGenerator implements OfferGenerator {
     const commentsCount = generateRandomValue(CommentsCount.Min, CommentsCount.Max).toString();
     const latitude = generateRandomValue(-90, 90, 5).toString();
     const longitude = generateRandomValue(-180, 180, 5).toString();
+    const authorName = getRandomItem<string>(this.mockData.names);
+    const avatar = getRandomItem<string>(this.mockData.images);
+    const isPro = getRandomItem<boolean>([true, false]);
 
     return [
       title, description, postDate,
@@ -41,6 +44,7 @@ export class TSVOfferGenerator implements OfferGenerator {
       isPremium, isFavorite, rating,
       type, bedroomsCount, guestsCount,
       price, goods, authorEmail,
+      authorName, avatar, isPro,
       commentsCount, latitude, longitude
     ].join('\t');
   }
