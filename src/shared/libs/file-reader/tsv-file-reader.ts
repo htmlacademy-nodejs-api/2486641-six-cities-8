@@ -1,5 +1,5 @@
 import { FileReader } from './file-reader.interface.js';
-import { Offer, HouseType, City, Good, Location } from '../../types/index.js';
+import { Offer, HouseType, City, Good, Location, User } from '../../types/index.js';
 import { Cities } from '../../../const.js';
 import EventEmitter from 'node:events';
 import { createReadStream } from 'node:fs';
@@ -30,6 +30,9 @@ export class TSVFileReader extends EventEmitter implements FileReader {
       price,
       goods,
       authorEmail,
+      authorName,
+      avatar,
+      isPro,
       commentsCount,
       latitude,
       longitude,
@@ -49,11 +52,15 @@ export class TSVFileReader extends EventEmitter implements FileReader {
       bedroomsCount: this.parseBedroomsCount(bedrooms),
       guestsCount: this.parseGuestsCount(guests),
       price: this.parsePrice(price),
-      authorEmail,
+      author: this.parseAuthor(authorEmail, authorName, avatar, isPro),
       commentsCount: this.parseCommentsCount(commentsCount),
       goods: this.parseGoods(goods),
       location: this.parseLocation(latitude, longitude),
     };
+  }
+
+  private parseAuthor(email: string, name: string, avatarUrl: string, isPro: string): User {
+    return {name, email, avatarUrl, isPro: this.parseStringToBoolean(isPro)};
   }
 
   private parseStringToBoolean(value: string): boolean {
@@ -124,7 +131,9 @@ export class TSVFileReader extends EventEmitter implements FileReader {
         importedRowCount++;
 
         const parsedOffer = this.parseLineToOffer(completeRow);
-        this.emit('line', parsedOffer);
+        await new Promise((resolve) => {
+          this.emit('line', parsedOffer, resolve);
+        });
       }
     }
     this.emit('end', importedRowCount);

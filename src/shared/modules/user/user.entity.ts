@@ -13,7 +13,7 @@ export interface UserEntity extends defaultClasses.Base {}
 })
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class UserEntity extends defaultClasses.TimeStamps implements User {
-  @prop({required: true, minlength: [3, 'Min length for name is 3']})
+  @prop({required: true, minlength: [1, 'Min length for name is 3'], maxlength: [15, 'Max length for name is 15']})
   public name: string;
 
   @prop({unique: true})
