@@ -17,7 +17,6 @@ export type Offer = {
   guestsCount: number;
   price: number;
   goods: Good[];
-  //authorEmail: string;
   author: User;
   commentsCount: number;
   location: Location;
