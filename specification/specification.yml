@@ -1,0 +1,551 @@
+openapi: 3.0.3
+info:
+  title: API сервер для проекта «Шесть городов».
+  description: |-
+    * Список ресурсов и маршрутов сервера «Шесть городов».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 2.0.0
+tags:
+  - name: offers
+    description: Действия с предложениями.
+  - name: users
+    description: Действия с пользователем.
+  - name: comments
+    description: Действия с комментариями.
+
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Создание нового пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Данные для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createUser'
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Вход в закрытую часть приложения
+      description: Аутентификация и авторизация пользователя
+
+      responses:
+        "201":
+          description: Login successful.
+
+        "401":
+          description: Permission denied.
+
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Проверяет состояния клиента — авторизован или нет
+
+      responses:
+        "200":
+          description: Пользователь авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+
+        "401":
+          description: Permission denied.
+
+  /users/logout:
+    get:
+      tags:
+        - users
+      summary: Выход из закрытой части приложения
+      description: Завершает пользовательский сеанс
+
+      responses:
+        "204":
+          description: Пользователь завершил сеанс
+
+  /offers:
+    get:
+      tags:
+        - offers
+      summary: Список предложений по аренде
+      description: Возвращает список предложений
+
+      responses:
+        "200":
+          description: Список предложений по аренде
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+    post:
+      tags:
+        - offers
+      summary: Создание нового предложения
+      description: Создает новое предложение
+
+      requestBody:
+        description: Данные для создания нового предложения по аренде.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+        required: true
+
+      responses:
+        "201":
+          description: Предложение по аренде создано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+  /offers/{offerId}:
+    get:
+      tags:
+        - offers
+      summary: Детальная информация по предложению
+      description: Возвращает детальную информацию по идентификатору предложения
+
+      responses:
+        "200":
+          description: Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+    put:
+      tags:
+        - offers
+      summary: Редактирование предложения
+      description: Редактирует предложение
+
+      requestBody:
+        description: Данные для редактирования предложения по аренде.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOffer'
+        required: true
+
+      responses:
+        "201":
+          description: Предложение по аренде отредактировано. Объект предложения.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offer'
+
+    delete:
+      tags:
+        - offers
+      summary: Удаление предложения по аренде
+      description: Удаляет предложение
+
+      responses:
+        "204":
+          description: Предложение удалено
+
+  /premium-offers/{cityName}:
+    get:
+      tags:
+        - offers
+      summary: Премиальные предложения для города
+      description: Возвращает список премиальных предложений для аренды по городу
+
+      responses:
+        "200":
+          description: Список премиальных предложений для аренды по городу
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+  /favorite-offers:
+    get:
+      tags:
+        - offers
+      summary:  Список избранных предложений
+      description: Возвращает список избранных предложений
+
+      responses:
+        "200":
+          description:  Список избранных предложений
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+  /offers/{offerId}/change-favorite:
+    patch:
+      tags:
+        - offers
+      summary: Добавление и удаление предложения в/из избранного
+      description: Добавляет/удаляет предложения из избранного
+
+      requestBody:
+        description: Данные для редактирования предложения по аренде.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isFavorite:
+                  type: boolean
+                  example: true
+        required: true
+
+      responses:
+        "201":
+          description: Предложение добавлено/удалено из избранного
+
+  /comments/{offerId}:
+    get:
+      tags:
+        - comments
+      summary: Список комментариев для предложения
+      description: Возвращает список комментариев для предложения
+
+      responses:
+        "200":
+          description: Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+    post:
+      tags:
+        - comments
+      summary: Добавление комментария
+      description: Добавляет комментарий к определённому предложению по аренде
+
+      requestBody:
+        description: Данные для создания нового комментария.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createComment'
+        required: true
+
+      responses:
+        "201":
+          description: Комментарий опубликован. Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/comment'
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        name:
+          type: string
+          example: Keks
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        name:
+          type: string
+          example: Keks
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
+
+        avatarUrl:
+          type: string
+          example: https://1.jpg
+
+        isPro:
+          type: boolean
+          example: true
+
+    createOffer:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: The house among olive
+
+        description:
+          type: string
+          example: Design interior in most sympathetic area!
+
+        postDate:
+          type: string
+          example: 2024-09-07T01:55:40.283Z
+
+        city:
+          type: string
+          example: Paris
+
+        previewImage:
+          type: string
+          example: https://16.design.htmlacademy.pro/static/hotel/1.jpg
+
+        images:
+          type: array
+          example: [
+            https://16.design.htmlacademy.pro/static/hotel/1.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/2.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/3.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/4.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/5.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/6.jpg
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.5
+
+        type:
+          type: string
+          example: apartment
+
+        bedroomsCount:
+          type: number
+          example: 3
+
+        guestsCount:
+          type: number
+          example: 4
+
+        price:
+          type: number
+          example: 5000
+
+        goods:
+          type: array
+          example: [Breakfast, Air conditioning, Laptop friendly workspace]
+
+        authorId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499,
+          }
+
+    offer:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        title:
+          type: string
+          example: The house among olive
+
+        description:
+          type: string
+          example: Design interior in most sympathetic area!
+
+        postDate:
+          type: string
+          example: 2024-09-07T01:55:40.283Z
+
+        city:
+          type: string
+          example: Paris
+
+        previewImage:
+          type: string
+          example: https://16.design.htmlacademy.pro/static/hotel/1.jpg
+
+        images:
+          type: array
+          example: [
+            https://16.design.htmlacademy.pro/static/hotel/1.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/2.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/3.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/4.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/5.jpg,
+            https://16.design.htmlacademy.pro/static/hotel/6.jpg
+          ]
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.5
+
+        type:
+          type: string
+          example: apartment
+
+        bedroomsCount:
+          type: number
+          example: 3
+
+        guestsCount:
+          type: number
+          example: 4
+
+        price:
+          type: number
+          example: 5000
+
+        goods:
+          type: array
+          example: [Breakfast, Air conditioning, Laptop friendly workspace]
+
+        authorId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        location:
+          type: object
+          example: {
+            latitude: 48.85661,
+            longitude: 2.351499,
+          }
+
+        commentsCount:
+          type: number
+          example: 20
+
+    offerItem:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: The house among olive
+
+        postDate:
+          type: string
+          example: 2024-09-07T01:55:40.283Z
+
+        city:
+          type: string
+          example: Paris
+
+        previewImage:
+          type: string
+          example: https://16.design.htmlacademy.pro/static/hotel/1.jpg
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.5
+
+        type:
+          type: string
+          example: apartment
+
+        price:
+          type: number
+          example: 5000
+
+        commentsCount:
+          type: number
+          example: 20
+
+    offers:
+      type: array
+      items:
+        $ref: '#/components/schemas/offerItem'
+
+    comment:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+        text:
+          type: string
+          example: Awesome!
+
+        postDate:
+          type: string
+          example: 2024-09-07T01:55:40.283Z
+
+        rating:
+          type: number
+          example: 5
+
+        userId:
+          type: string
+          example: 6329c3d6a04ab1061c6425ea
+
+    createComment:
+      type: object
+
+      properties:
+        text:
+          type: string
+          example: Awesome!
+
+        rating:
+          type: number
+          example: 5
