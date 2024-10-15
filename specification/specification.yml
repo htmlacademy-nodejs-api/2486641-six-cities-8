@@ -169,6 +169,59 @@ paths:
         "204":
           description: Предложение удалено
 
+  /premium-offers/{cityName}:
+    get:
+      tags:
+        - offers
+      summary: Премиальные предложения для города
+      description: Возвращает список премиальных предложений для аренды по городу
+
+      responses:
+        "200":
+          description: Список премиальных предложений для аренды по городу
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+  /favorite-offers:
+    get:
+      tags:
+        - offers
+      summary:  Список избранных предложений
+      description: Возвращает список избранных предложений
+
+      responses:
+        "200":
+          description:  Список избранных предложений
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/offers'
+
+  /offers/{offerId}/change-favorite:
+    patch:
+      tags:
+        - offers
+      summary: Добавление и удаление предложения в/из избранного
+      description: Добавляет/удаляет предложения из избранного
+
+      requestBody:
+        description: Данные для редактирования предложения по аренде.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isFavorite:
+                  type: boolean
+                  example: true
+        required: true
+
+      responses:
+        "201":
+          description: Предложение добавлено/удалено из избранного
+
   /comments/{offerId}:
     get:
       tags:
@@ -408,10 +461,58 @@ components:
             longitude: 2.351499,
           }
 
+        commentsCount:
+          type: number
+          example: 20
+
+    offerItem:
+      type: object
+
+      properties:
+        title:
+          type: string
+          example: The house among olive
+
+        postDate:
+          type: string
+          example: 2024-09-07T01:55:40.283Z
+
+        city:
+          type: string
+          example: Paris
+
+        previewImage:
+          type: string
+          example: https://16.design.htmlacademy.pro/static/hotel/1.jpg
+
+        isPremium:
+          type: boolean
+          example: true
+
+        isFavorite:
+          type: boolean
+          example: true
+
+        rating:
+          type: number
+          example: 4.5
+
+        type:
+          type: string
+          example: apartment
+
+        price:
+          type: number
+          example: 5000
+
+        commentsCount:
+          type: number
+          example: 20
+
     offers:
       type: array
       items:
-        $ref: '#/components/schemas/offer'
+        $ref: '#/components/schemas/offerItem'
 
     comment:
       type: object
