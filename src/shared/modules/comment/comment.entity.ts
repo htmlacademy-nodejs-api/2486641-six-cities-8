@@ -6,7 +6,8 @@ import { UserEntity } from '../user/index.js';
     collection: 'comments',
     timestamps: true,
   }
-})export class CommentEntity {
+})
+export class CommentEntity {
   @prop()
   public text: string;
 
