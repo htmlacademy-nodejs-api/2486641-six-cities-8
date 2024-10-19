@@ -31,7 +31,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async findPremiumByCity(cityName: string): Promise<DocumentType<OfferEntity>[]> {
-    return await this.offerModel.find({isPremium: true, city: cityName});
+    return await this.offerModel.find({isPremium: true, cityName: cityName});
   }
 
   public async findFavorite(): Promise<DocumentType<OfferEntity>[]> {
@@ -44,7 +44,6 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>> {
-    //console.log(dto);
     const result = await this.offerModel.create(dto);
     this.logger.info(`New offer created: ${dto.title}`);
 
