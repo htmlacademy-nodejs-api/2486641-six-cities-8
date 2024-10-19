@@ -41,7 +41,7 @@ export class ImportCommand implements Command {
       ...offer.author,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
-
+    console.log(offer);
     await this.offerService.create({
       userId: user.id,
       title: offer.title,
@@ -50,7 +50,7 @@ export class ImportCommand implements Command {
       price: offer.price,
       type: offer.type,
       bedroomsCount: offer.bedroomsCount,
-      cityName: offer.city?.name || 'Paris',
+      cityName: offer.city?.name ?? 'Paris',
       commentsCount: offer.commentsCount,
       goods: offer.goods,
       guestsCount: offer.guestsCount,

@@ -92,12 +92,12 @@ export class TSVFileReader extends EventEmitter implements FileReader {
   }
 
   private parseImages(imagesString: string): string[] {
-    return imagesString.split(';').map((item) => item);
+    return imagesString.split(',').map((item) => item);
   }
 
   private parseGoods(goodsString: string): Good[] {
     // Оно конечно работает, но код выглядит неоптимальным и плохо читаемым
-    return goodsString.split(';').map((item) => Good[item as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
+    return goodsString.split(',').map((item) => Good[item as 'Breakfast' | 'Air conditioning' | 'Laptop friendly workspace' | 'Baby seat' | 'Washer' | 'Towels' | 'Fridge']);
   }
 
   private parsePrice(priceString: string): number {

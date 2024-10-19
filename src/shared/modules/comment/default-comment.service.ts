@@ -14,16 +14,16 @@ export class DefaultCommentService implements CommentService {
   ){}
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
-    this.logger.info('do create');
     const result = await this.commentModel.create(dto);
     this.logger.info(`New comment created: ${dto.text}`);
 
     return result;
   }
 
-  findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>>[] {
-    this.logger.info(offerId);
-    throw new Error('Method not implemented.');
+  public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {
+    const comments = await this.commentModel.find({offerId});
+    this.logger.info(`Find comments by offerId = ${offerId}`);
+    return comments;
   }
 
 }
