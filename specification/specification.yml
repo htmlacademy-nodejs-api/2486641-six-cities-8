@@ -237,6 +237,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/comment'
 
+  /comments:
     post:
       tags:
         - comments
