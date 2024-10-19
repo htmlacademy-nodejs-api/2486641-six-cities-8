@@ -5,7 +5,6 @@ import { Logger } from '../shared/libs/logger/logger.interface.js';
 import { Component } from '../shared/types/component.enum.js';
 import { DatabaseClient } from '../shared/libs/database-client/index.js';
 import { getMongoURI } from '../shared/helpers/index.js';
-import { UserModel } from '../shared/modules/user/index.js';
 
 @injectable()
 export class RestApplication {
@@ -36,12 +35,11 @@ export class RestApplication {
     this.logger.info('Init database completed');
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    await UserModel.create({
-      name: 'Ivanov Ivan',
-      email: 'ivano@mail.com',
-      avatarUrl: 'http://123.jpg',
-      password: 'Pa$$w0rD',
-      isPro: true,
-    });
+    // await CommentModel.create({
+    //   postDate: new Date(),
+    //   rating: 5,
+    //   text: 'Test comment',
+    //   userId: '670be199b540b23ae0674c38',
+    // });
   }
 }
