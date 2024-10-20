@@ -3,7 +3,8 @@ export {
   getRandomItems,
   getRandomItem,
   getErrorMessage,
-  createErrorObject
+  createErrorObject,
+  fillDTO
 } from './common.js';
 
 export { getMongoURI } from './database.js';

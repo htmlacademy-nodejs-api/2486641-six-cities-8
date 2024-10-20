@@ -2,3 +2,12 @@
 GET http://localhost:3123/api HTTP/1.1
 
 ###
+
+POST http://localhost:5000/register HTTP/1.1
+content-type: application/json
+
+{
+  "email": "keks@htmlacademy.ru",
+  "name": "Keks",
+  "password": "123456"
+}
