@@ -2,7 +2,8 @@ export {
   generateRandomValue,
   getRandomItems,
   getRandomItem,
-  getErrorMessage
+  getErrorMessage,
+  createErrorObject
 } from './common.js';
 
 export { getMongoURI } from './database.js';
