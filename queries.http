@@ -3,11 +3,18 @@ GET http://localhost:3123/api HTTP/1.1
 
 ###
 
-POST http://localhost:5000/register HTTP/1.1
-content-type: application/json
+POST http://localhost:5000/users/register HTTP/1.1
+Content-type: application/json
 
 {
-  "email": "keks@htmlacademy.ru",
-  "name": "Keks",
+  "name": "Keks1234",
+  "email": "keks2134@htmlacademy.ru",
+  "avatarUrl": "qwerty",
+  "isPro": "true",
   "password": "123456"
 }
+
+###
+
+GET http://localhost:5000/offers HTTP/1.1
+Content-Type: application/json

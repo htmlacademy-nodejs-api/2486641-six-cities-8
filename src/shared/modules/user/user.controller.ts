@@ -20,16 +20,18 @@ export class UserController extends BaseController {
     @inject(Component.Config) private readonly configService: Config<RestSchema>,
   ) {
     super(logger);
-    this.logger.info('Register routes for UserController…');
+    this.logger.info('Register routes for UserController...');
 
     this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
   }
 
   public async create(
-    { body }: CreateUserRequest,
+    req: CreateUserRequest,
     res: Response,
   ): Promise<void> {
+    const body = req.body;
+    console.log(body);
     const existsUser = await this.userService.findByEmail(body.email);
 
     if (existsUser) {
