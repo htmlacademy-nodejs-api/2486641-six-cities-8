@@ -41,8 +41,8 @@ export class DefaultOfferService implements OfferService {
     return await this.offerModel.find({isPremium: true, cityName: cityName});
   }
 
-  public async findFavorite(): Promise<DocumentType<OfferEntity>[]> {
-    return await this.offerModel.find({isFavorite: true});
+  public async findFavorite(userId: string): Promise<DocumentType<OfferEntity>[]> {
+    return await this.offerModel.find({isFavorite: true, userId: userId});
   }
 
   public async changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null> {

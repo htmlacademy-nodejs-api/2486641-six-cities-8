@@ -11,6 +11,6 @@ export interface OfferService {
   update(offerId: string, dto: UpdateOfferDto): Promise<DocumentType<OfferEntity> | null>;
   delete(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremiumByCity(cityName: string): Promise<DocumentType<OfferEntity>[]>;
-  findFavorite(): Promise<DocumentType<OfferEntity>[]>;
+  findFavorite(userId: string): Promise<DocumentType<OfferEntity>[]>;
   changeFavorite(offerId: string): Promise<DocumentType<OfferEntity> | null>;
 }

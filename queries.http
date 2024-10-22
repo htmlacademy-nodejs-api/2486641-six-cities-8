@@ -21,6 +21,27 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:5000/offers/Cologne/premium HTTP/1.1
+Content-Type: application/json
+
+###
+
+GET http://localhost:5000/offers/67138f19716a710e06407bbe HTTP/1.1
+Content-Type: application/json
+
+###
+
+PATCH http://localhost:5000/offers/67138f19716a710e06407bbe/change-favorite HTTP/1.1
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:5000/offers/67161e46b16a807dfa80ceb5 HTTP/1.1
+Content-Type: application/json
+
+
+###
+
 POST http://localhost:5000/offers HTTP/1.1
 Content-Type: application/json
 

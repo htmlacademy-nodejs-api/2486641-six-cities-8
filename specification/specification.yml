@@ -169,7 +169,7 @@ paths:
         "204":
           description: Предложение удалено
 
-  /premium-offers/{cityName}:
+  /offers/{cityName}/premium:
     get:
       tags:
         - offers
