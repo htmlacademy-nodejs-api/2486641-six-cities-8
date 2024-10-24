@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpMethod } from '../../libs/rest/index.js';
+import { BaseController, HttpMethod, RequestQuery } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/logger.interface.js';
 import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
@@ -10,6 +10,7 @@ import { CreateOfferRequest } from './type/create-offer-request.type.js';
 import { fillDTO } from '../../helpers/common.js';
 import { ShowOfferRdo } from './rdo/show-offer.rdo.js';
 import { IndexOfferRdo } from './rdo/index-offer.rdo.js';
+import { ParamCityName } from './type/param-cityname.type.js';
 
 @injectable()
 export class OfferController extends BaseController{
@@ -29,8 +30,11 @@ export class OfferController extends BaseController{
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
   }
 
-  public async index(_req: Request, res: Response): Promise<void> {
-    const result = await this.offerService.findAll();
+  public async index(
+    { query }: Request<unknown, unknown, unknown, RequestQuery>,
+    res: Response
+  ): Promise<void> {
+    const result = await this.offerService.findAll(query.limit);
     this.ok(res, fillDTO(IndexOfferRdo, result));
   }
 
@@ -39,7 +43,7 @@ export class OfferController extends BaseController{
     res: Response
   ): Promise<void> {
     const result = await this.offerService.create(body);
-    this.created(res, result);
+    this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async show(
@@ -57,7 +61,7 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const {offerId} = params;
     const result = await this.offerService.update(offerId, body);
-    this.created(res, result);
+    this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async delete(
@@ -75,11 +79,11 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const {offerId} = params;
     const result = await this.offerService.changeFavorite(offerId);
-    this.created(res, result);
+    this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
-  public async getPremiumByCity(req: Request, res: Response): Promise<void> {
-    const result = await this.offerService.findPremiumByCity(req.params.cityName);
-    this.ok(res, result);
+  public async getPremiumByCity({ params }: Request<ParamCityName>, res: Response): Promise<void> {
+    const result = await this.offerService.findPremiumByCity(params.cityName);
+    this.ok(res, fillDTO(IndexOfferRdo, result));
   }
 }

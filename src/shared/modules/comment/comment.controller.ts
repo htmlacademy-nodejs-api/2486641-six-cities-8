@@ -5,6 +5,8 @@ import { Logger } from '../../libs/logger/logger.interface.js';
 import { CommentService } from './comment-service.interface.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { Request, Response } from 'express';
+import { fillDTO } from '../../helpers/common.js';
+import { CommentRdo } from './rdo/comment.rdo.js';
 
 @injectable()
 export class CommentController extends BaseController {
@@ -16,7 +18,7 @@ export class CommentController extends BaseController {
     this.logger.info('Register routes for CommentController...');
 
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.show });
+    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.index });
   }
 
   public async create(
@@ -27,8 +29,8 @@ export class CommentController extends BaseController {
     this.created(res, result);
   }
 
-  public async show(req: Request, res: Response): Promise<void> {
+  public async index(req: Request, res: Response): Promise<void> {
     const result = await this.commentService.findByOfferId(req.params.offerId);
-    this.ok(res, result);
+    this.ok(res, fillDTO(CommentRdo, result));
   }
 }

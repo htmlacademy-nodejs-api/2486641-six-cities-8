@@ -6,6 +6,8 @@ import { inject, injectable } from 'inversify';
 import { Component } from '../../types/component.enum.js';
 import { Logger } from '../../libs/logger/logger.interface.js';
 
+const DEFAULT_COMMENT_COUNT = 50;
+
 @injectable()
 export class DefaultCommentService implements CommentService {
   constructor(
@@ -21,7 +23,10 @@ export class DefaultCommentService implements CommentService {
   }
 
   public async findByOfferId(offerId: string): Promise<DocumentType<CommentEntity>[]> {
-    const comments = await this.commentModel.find({offerId});
+    const comments = await this.commentModel
+      .find({offerId})
+      .sort({createdAt: 'desc'})
+      .limit(DEFAULT_COMMENT_COUNT);
     this.logger.info(`Find comments by offerId = ${offerId}`);
     return comments;
   }
