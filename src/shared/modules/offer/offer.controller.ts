@@ -15,16 +15,16 @@ export class OfferController extends BaseController{
     super(logger);
     this.logger.info('Register routes for OfferController...');
 
-    this.addRoute({path: '/', handler: this.findAll, method: HttpMethod.Get});
+    this.addRoute({path: '/', handler: this.index, method: HttpMethod.Get});
     this.addRoute({path: '/', handler: this.create, method: HttpMethod.Post});
-    this.addRoute({path: '/:id', handler: this.findById, method: HttpMethod.Get});
+    this.addRoute({path: '/:id', handler: this.show, method: HttpMethod.Get});
     this.addRoute({path: '/:id', handler: this.update, method: HttpMethod.Put});
     this.addRoute({path: '/:id', handler: this.delete, method: HttpMethod.Delete});
     this.addRoute({path: '/:id/change-favorite', handler: this.changeIsFavorite, method: HttpMethod.Patch});
-    this.addRoute({path: '/:cityName/premium', handler: this.premiumByCity, method: HttpMethod.Get});
+    this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
   }
 
-  public async findAll(_req: Request, res: Response): Promise<void> {
+  public async index(_req: Request, res: Response): Promise<void> {
     const result = await this.offerService.findAll();
     this.ok(res, result);
   }
@@ -37,7 +37,7 @@ export class OfferController extends BaseController{
     this.created(res, result);
   }
 
-  public async findById(req: Request, res: Response): Promise<void> {
+  public async show(req: Request, res: Response): Promise<void> {
     const result = await this.offerService.findById(req.params.id);
     this.ok(res, result);
   }
@@ -66,7 +66,7 @@ export class OfferController extends BaseController{
     this.created(res, result);
   }
 
-  public async premiumByCity(req: Request, res: Response): Promise<void> {
+  public async getPremiumByCity(req: Request, res: Response): Promise<void> {
     const result = await this.offerService.findPremiumByCity(req.params.cityName);
     this.ok(res, result);
   }
