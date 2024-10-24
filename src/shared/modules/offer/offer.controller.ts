@@ -4,7 +4,12 @@ import { Logger } from '../../libs/logger/logger.interface.js';
 import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
 import { Request, Response } from 'express';
-import { CreateOfferDto } from './dto/create-offer.dto.js';
+import { ParamOfferId } from './type/param-offerid.type.js';
+import { UpdateOfferDto } from './dto/update-offer.dto.js';
+import { CreateOfferRequest } from './type/create-offer-request.type.js';
+import { fillDTO } from '../../helpers/common.js';
+import { ShowOfferRdo } from './rdo/show-offer.rdo.js';
+import { IndexOfferRdo } from './rdo/index-offer.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController{
@@ -17,52 +22,59 @@ export class OfferController extends BaseController{
 
     this.addRoute({path: '/', handler: this.index, method: HttpMethod.Get});
     this.addRoute({path: '/', handler: this.create, method: HttpMethod.Post});
-    this.addRoute({path: '/:id', handler: this.show, method: HttpMethod.Get});
-    this.addRoute({path: '/:id', handler: this.update, method: HttpMethod.Put});
-    this.addRoute({path: '/:id', handler: this.delete, method: HttpMethod.Delete});
-    this.addRoute({path: '/:id/change-favorite', handler: this.changeIsFavorite, method: HttpMethod.Patch});
+    this.addRoute({path: '/:offerId', handler: this.show, method: HttpMethod.Get});
+    this.addRoute({path: '/:offerId', handler: this.update, method: HttpMethod.Put});
+    this.addRoute({path: '/:offerId', handler: this.delete, method: HttpMethod.Delete});
+    this.addRoute({path: '/:offerId/change-favorite', handler: this.changeIsFavorite, method: HttpMethod.Patch});
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
     const result = await this.offerService.findAll();
-    this.ok(res, result);
+    this.ok(res, fillDTO(IndexOfferRdo, result));
   }
 
   public async create(
-    {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDto>,
+    { body }: CreateOfferRequest,
     res: Response
   ): Promise<void> {
     const result = await this.offerService.create(body);
     this.created(res, result);
   }
 
-  public async show(req: Request, res: Response): Promise<void> {
-    const result = await this.offerService.findById(req.params.id);
-    this.ok(res, result);
+  public async show(
+    { params }: Request<ParamOfferId>,
+    res: Response
+  ): Promise<void> {
+    const {offerId} = params;
+    const result = await this.offerService.findById(offerId);
+    this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async update(
-    req: Request,
+    { body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.update(req.params.id, req.body);
+    const {offerId} = params;
+    const result = await this.offerService.update(offerId, body);
     this.created(res, result);
   }
 
   public async delete(
-    req: Request,
+    { params }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.delete(req.params.id);
+    const { offerId } = params;
+    const result = await this.offerService.delete(offerId);
     this.noContent(res, result);
   }
 
   public async changeIsFavorite(
-    req: Request,
+    { params }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.changeFavorite(req.params.id);
+    const {offerId} = params;
+    const result = await this.offerService.changeFavorite(offerId);
     this.created(res, result);
   }
 
