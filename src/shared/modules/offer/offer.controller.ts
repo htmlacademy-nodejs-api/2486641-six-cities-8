@@ -11,12 +11,15 @@ import { fillDTO } from '../../helpers/common.js';
 import { ShowOfferRdo } from './rdo/show-offer.rdo.js';
 import { IndexOfferRdo } from './rdo/index-offer.rdo.js';
 import { ParamCityName } from './type/param-cityname.type.js';
+import { CommentService } from '../comment/comment-service.interface.js';
+import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 
 @injectable()
 export class OfferController extends BaseController{
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
-    @inject(Component.OfferService) private readonly offerService: OfferService
+    @inject(Component.OfferService) private readonly offerService: OfferService,
+    @inject(Component.CommentService) private readonly commentService: CommentService
   ){
     super(logger);
     this.logger.info('Register routes for OfferController...');
@@ -28,6 +31,7 @@ export class OfferController extends BaseController{
     this.addRoute({path: '/:offerId', handler: this.delete, method: HttpMethod.Delete});
     this.addRoute({path: '/:offerId/change-favorite', handler: this.changeIsFavorite, method: HttpMethod.Patch});
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
+    this.addRoute({path: '/:offerId/comments', handler: this.getComments, method: HttpMethod.Get});
   }
 
   public async index(
@@ -85,5 +89,10 @@ export class OfferController extends BaseController{
   public async getPremiumByCity({ params }: Request<ParamCityName>, res: Response): Promise<void> {
     const result = await this.offerService.findPremiumByCity(params.cityName);
     this.ok(res, fillDTO(IndexOfferRdo, result));
+  }
+
+  public async getComments(req: Request, res: Response): Promise<void> {
+    const result = await this.commentService.findByOfferId(req.params.offerId);
+    this.ok(res, fillDTO(CommentRdo, result));
   }
 }

@@ -90,5 +90,5 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/comments/67138f19716a710e06407bbe HTTP/1.1
+GET http://localhost:5000/offers/67138f19716a710e06407bbe/comments HTTP/1.1
 Content-Type: application/json
