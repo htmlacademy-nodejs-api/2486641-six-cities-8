@@ -8,3 +8,5 @@ export { RequestBody } from './types/request-body.type.js';
 export { RequestQuery } from './types/request-query.type.js';
 export { Middleware } from './middleware/middleware.interface.js';
 export { ValidateDtoMiddleware } from './middleware/validate-dto.middleware.js';
+export { DocumentExistsMiddleware } from './middleware/document-exists.middleware.js';
+export { ValidateObjectIdMiddleware } from './middleware/validate-objectid.middleware.js';

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpMethod, RequestQuery, ValidateDtoMiddleware } from '../../libs/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpMethod, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/logger.interface.js';
 import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
@@ -32,12 +32,43 @@ export class OfferController extends BaseController{
       method: HttpMethod.Post,
       middlewares: [new ValidateDtoMiddleware(CreateOfferDto)]
     });
-    this.addRoute({path: '/:offerId', handler: this.show, method: HttpMethod.Get});
-    this.addRoute({path: '/:offerId', handler: this.update, method: HttpMethod.Put});
-    this.addRoute({path: '/:offerId', handler: this.delete, method: HttpMethod.Delete});
-    this.addRoute({path: '/:offerId/change-favorite', handler: this.changeIsFavorite, method: HttpMethod.Patch});
+    this.addRoute({
+      path: '/:offerId',
+      handler: this.show,
+      method: HttpMethod.Get,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      handler: this.update,
+      method: HttpMethod.Put,
+      middlewares: [
+        new ValidateDtoMiddleware(UpdateOfferDto),
+        new ValidateObjectIdMiddleware('offerId'),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      handler: this.delete,
+      method: HttpMethod.Delete,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
+    this.addRoute({
+      path: '/:offerId/change-favorite',
+      handler: this.changeIsFavorite,
+      method: HttpMethod.Patch,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
-    this.addRoute({path: '/:offerId/comments', handler: this.getComments, method: HttpMethod.Get});
+    this.addRoute({
+      path: '/:offerId/comments',
+      handler: this.getComments,
+      method: HttpMethod.Get,
+      middlewares: [
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateObjectIdMiddleware('offerId'),
+      ],
+    });
   }
 
   public async index(
