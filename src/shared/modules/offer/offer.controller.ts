@@ -65,8 +65,8 @@ export class OfferController extends BaseController{
       handler: this.getComments,
       method: HttpMethod.Get,
       middlewares: [
-        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
         new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
   }
