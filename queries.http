@@ -130,3 +130,19 @@ Content-Type: application/json
     "longitude": 2.351499
   }
 }
+
+###
+
+## Отправить изображение
+
+POST http://localhost:5000/users/67138f19716a710e06407bbc/avatar HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="avatar"; filename="screen.png"
+Content-Type: image/png
+
+< C:\Users\Den\Pictures\2.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+##
