@@ -8,12 +8,18 @@ import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UpdateOfferDto } from './dto/update-offer.dto.js';
 
+const DEFAULT_OFFER_COUNT = 60;
 @injectable()
 export class DefaultOfferService implements OfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>
   ) {}
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.offerModel
+      .exists({_id: documentId})) !== null;
+  }
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
     return this.offerModel
@@ -61,8 +67,13 @@ export class DefaultOfferService implements OfferService {
     return await this.offerModel.findById(offerId).populate(['userId']).exec();
   }
 
-  public async findAll(): Promise<DocumentType<OfferEntity>[]> {
-    const result = await this.offerModel.find().populate(['userId']).exec();
-    return result;
+  public async findAll(count?: number): Promise<DocumentType<OfferEntity>[]> {
+    const limit = count ?? DEFAULT_OFFER_COUNT;
+    return this.offerModel
+      .find()
+      .sort({ postDate: 'desc' })
+      .limit(limit)
+      .populate(['userId'])
+      .exec();
   }
 }

@@ -222,10 +222,10 @@ paths:
         "201":
           description: Предложение добавлено/удалено из избранного
 
-  /comments/{offerId}:
+  /offers/{offerId}/comments:
     get:
       tags:
-        - comments
+        - offers
       summary: Список комментариев для предложения
       description: Возвращает список комментариев для предложения
 
