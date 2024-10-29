@@ -51,7 +51,7 @@ export class ImportCommand implements Command {
       type: offer.type,
       bedroomsCount: offer.bedroomsCount,
       cityName: offer.city?.name ?? 'Paris',
-      commentsCount: offer.commentsCount,
+      //commentsCount: offer.commentsCount,
       goods: offer.goods,
       guestsCount: offer.guestsCount,
       images: offer.images,
