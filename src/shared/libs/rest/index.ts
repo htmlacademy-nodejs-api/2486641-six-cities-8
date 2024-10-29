@@ -11,3 +11,4 @@ export { ValidateDtoMiddleware } from './middleware/validate-dto.middleware.js';
 export { DocumentExistsMiddleware } from './middleware/document-exists.middleware.js';
 export { ValidateObjectIdMiddleware } from './middleware/validate-objectid.middleware.js';
 export { UploadFileMiddleware } from './middleware/upload-file.middleware.js';
+export { ExceptionFilter } from '../../libs/rest/exception-filter/exception-filter.interface.js';
