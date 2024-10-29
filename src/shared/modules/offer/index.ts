@@ -3,4 +3,4 @@ export { CreateOfferDto } from './dto/create-offer.dto.js';
 export { OfferService } from './offer-service.interface.js';
 export { DefaultOfferService } from './default-offer.service.js';
 export { createOfferContainer } from './offer.container.js';
-export { CreateOfferValidationMessage } from './dto/create-offer.messages.js';
+export { CreateUpdateOfferValidationMessage } from './dto/create-update-offer.messages.js';
