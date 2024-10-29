@@ -10,7 +10,17 @@ Content-type: application/json
   "name": "Keks1234",
   "email": "keks2134@htmlacademy.ru",
   "avatarUrl": "qwerty",
-  "isPro": "true",
+  "isPro": true,
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:5000/users/login HTTP/1.1
+Content-type: application/json
+
+{
+  "email": "keks2134@htmlacademy.ru",
   "password": "123456"
 }
 
@@ -81,10 +91,10 @@ Content-Type: application/json
 ###
 POST http://localhost:5000/comments/ HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imtla3MyMTM0QGh0bWxhY2FkZW15LnJ1IiwibmFtZSI6Iktla3MxMjM0IiwiaWQiOiI2NzE2MWUzNmRmZTNlNGU4MDliOTM2MDMiLCJpYXQiOjE3MzAyMjIyNzcsImV4cCI6MTczMDM5NTA3N30.L5LeK8wV08o8jyex6o8VI4lQr0TfdldIEjdnTcMY8rg
 
 {
   "offerId": "67138f19716a710e06407bbe",
-  "userId": "67138f19716a710e06407bbc",
   "text": "Awesome!",
   "rating": 5
 }
@@ -146,3 +156,8 @@ Content-Type: image/png
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ##
+
+###
+GET http://localhost:5000/users/login HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imtla3MyMTM0QGh0bWxhY2FkZW15LnJ1IiwibmFtZSI6Iktla3MxMjM0IiwiaWQiOiI2NzE2MWUzNmRmZTNlNGU4MDliOTM2MDMiLCJpYXQiOjE3MzAyMjIyNzcsImV4cCI6MTczMDM5NTA3N30.L5LeK8wV08o8jyex6o8VI4lQr0TfdldIEjdnTcMY8rg
