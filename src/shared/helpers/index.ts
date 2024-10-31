@@ -5,7 +5,8 @@ export {
   getErrorMessage,
   createErrorObject,
   fillDTO,
-  reduceValidationErrors
+  reduceValidationErrors,
+  getFullServerPath
 } from './common.js';
 
 export { getMongoURI } from './database.js';
