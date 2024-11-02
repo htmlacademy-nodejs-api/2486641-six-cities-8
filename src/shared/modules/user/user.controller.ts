@@ -56,9 +56,16 @@ export class UserController extends BaseController {
   }
 
   public async create(
-    {body}: CreateUserRequest,
+    { body, tokenPayload }: CreateUserRequest,
     res: Response,
   ): Promise<void> {
+    if (tokenPayload) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Current user already authorized',
+        'UserController'
+      );
+    }
     const existsUser = await this.userService.findByEmail(body.email);
 
     if (existsUser) {

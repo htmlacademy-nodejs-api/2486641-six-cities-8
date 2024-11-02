@@ -278,6 +278,10 @@ components:
           type: string
           example: 123456
 
+        isPro:
+          type: boolean
+          example: true
+
     user:
       type: object
 
