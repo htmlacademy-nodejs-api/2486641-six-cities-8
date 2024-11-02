@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:5000/offers/67260cd52ebc34915a0f2aa6 HTTP/1.1
+GET http://localhost:5000/offers/6725c8562603e2bf4ad4363c HTTP/1.1
 Content-Type: application/json
 
 ###
