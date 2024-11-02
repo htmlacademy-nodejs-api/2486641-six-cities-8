@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
-import { Config } from './index.js';
+import { Config } from './config.interface.js';
 import { Logger } from '../logger/index.js';
-import { configRestSchema, RestSchema } from './index.js';
+import { configRestSchema, RestSchema } from './rest.schema.js';
 import { inject, injectable } from 'inversify';
 import { Component } from '../../types/index.js';
 

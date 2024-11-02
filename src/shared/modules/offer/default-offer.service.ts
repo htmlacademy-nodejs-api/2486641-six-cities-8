@@ -22,7 +22,7 @@ export class DefaultOfferService implements OfferService {
   }
 
   public async incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null> {
-    console.log();
+    console.log('offerId=', offerId);
     return this.offerModel
       .findByIdAndUpdate(offerId, {'$inc': {
         commentCount: 1,
