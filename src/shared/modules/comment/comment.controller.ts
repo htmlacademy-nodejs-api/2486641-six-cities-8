@@ -5,12 +5,14 @@ import { Logger } from '../../libs/logger/logger.interface.js';
 import { CommentService } from './comment-service.interface.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
 import { Request, Response } from 'express';
+import { OfferService } from '../offer/offer-service.interface.js';
 
 @injectable()
 export class CommentController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
-    @inject(Component.CommentService) protected readonly commentService: CommentService
+    @inject(Component.CommentService) protected readonly commentService: CommentService,
+    @inject(Component.OfferService) protected readonly offerService: OfferService
   ){
     super(logger);
     this.logger.info('Register routes for CommentController...');
@@ -31,6 +33,7 @@ export class CommentController extends BaseController {
     res: Response
   ): Promise<void> {
     const result = await this.commentService.create({...body, userId: tokenPayload.id});
+    await this.offerService.incCommentCount(body.offerId);
     this.created(res, result);
   }
 }

@@ -1,6 +1,6 @@
 import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsDateString, IsEnum, IsInt, IsMongoId, IsNumber, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { Good, HouseType, Location } from '../../../types/index.js';
-import { CreateUpdateOfferValidationMessage } from '../dto/create-update-offer.messages.js';
+import { CreateUpdateOfferValidationMessage } from '../index.js';
 
 export class CreateOfferDto {
   @MinLength(10, { message: CreateUpdateOfferValidationMessage.title.minLength })

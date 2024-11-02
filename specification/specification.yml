@@ -52,6 +52,10 @@ paths:
       responses:
         "201":
           description: Login successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userLogin'
 
         "401":
           description: Permission denied.
@@ -74,16 +78,16 @@ paths:
         "401":
           description: Permission denied.
 
-  /users/logout:
-    get:
-      tags:
-        - users
-      summary: Выход из закрытой части приложения
-      description: Завершает пользовательский сеанс
+  # /users/logout:
+  #   get:
+  #     tags:
+  #       - users
+  #     summary: Выход из закрытой части приложения
+  #     description: Завершает пользовательский сеанс
 
-      responses:
-        "204":
-          description: Пользователь завершил сеанс
+  #     responses:
+  #       "204":
+  #         description: Пользователь завершил сеанс
 
   /offers:
     get:
@@ -305,6 +309,18 @@ components:
         isPro:
           type: boolean
           example: true
+
+    userLogin:
+      type: object
+
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5ydSIsIm5hbWUiOiJEZW5pcyIsImlkIjoiNjcyNWRkOGU0ZGVjYTc0MTMxNDE1ZWJhIiwiaWF0IjoxNzMwNTM4MTA5LCJleHAiOjE3MzA3MTA5MDl9.VKlNSAskJhSMHghBhsa4m9TJGZ0y_6a_kbVfY5JvrIA
+
+        email:
+          type: string
+          example: keks@htmlacademy.ru
 
     createOffer:
       type: object
