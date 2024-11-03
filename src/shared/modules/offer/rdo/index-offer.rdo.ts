@@ -4,6 +4,9 @@ import { City } from '../../../types/city.type.js';
 
 export class IndexOfferRdo {
   @Expose()
+  public id: number;
+
+  @Expose()
   public price: number;
 
   @Expose()

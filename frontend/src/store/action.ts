@@ -103,7 +103,7 @@ export const fetchPremiumOffers = createAsyncThunk<Offer[], string, { extra: Ext
   Action.FETCH_PREMIUM_OFFERS,
   async (cityName, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Offer[]>(`${ApiRoute.Premium}?city=${cityName}`);
+    const { data } = await api.get<Offer[]>(`${ApiRoute.Offers}?city=${cityName}${ApiRoute.Premium}`);
 
     return data;
   });
@@ -198,11 +198,11 @@ export const postFavorite = createAsyncThunk<
   const { api, history } = extra;
 
   try {
-    const { data } = await api.post<Offer>(
+    const { data } = await api.post<OfferDto>(
       `${ApiRoute.Favorite}/${id}`
     );
 
-    return data;
+    return adaptOfferToClient(data);
   } catch (error) {
     const axiosError = error as AxiosError;
 
@@ -222,11 +222,11 @@ export const deleteFavorite = createAsyncThunk<
   const { api, history } = extra;
 
   try {
-    const { data } = await api.delete<Offer>(
+    const { data } = await api.delete<OfferDto>(
       `${ApiRoute.Favorite}/${id}`
     );
 
-    return data;
+    return adaptOfferToClient(data);
   } catch (error) {
     const axiosError = error as AxiosError;
 
