@@ -3,7 +3,7 @@ import { generateRandomValue, getRandomItem, getRandomItems } from '../../helper
 import { MockServerData } from '../../types/mock-server-data.type.js';
 import { OfferGenerator } from './offer-generator.interface.js';
 import { HouseType } from '../../types/house-type.enum.js';
-import { Cities } from '../../../const.js';
+import { Cities } from '../../types/cities.js';
 import { Good } from '../../types/good.enum.js';
 import { BedroomsCount, CommentsCount, GuestsCount, Price, Rating } from './const.js';
 

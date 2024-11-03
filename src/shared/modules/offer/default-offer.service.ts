@@ -25,7 +25,7 @@ export class DefaultOfferService implements OfferService {
     console.log('offerId=', offerId);
     return this.offerModel
       .findByIdAndUpdate(offerId, {'$inc': {
-        commentCount: 1,
+        commentsCount: 1,
       }}).exec();
   }
 

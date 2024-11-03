@@ -29,6 +29,12 @@ export function fillDTO<T, V>(someDto: ClassConstructor<T>, plainObject: V) {
 }
 
 export function reduceValidationErrors(errors: ValidationError[]): ValidationErrorField[] {
+  for (const item of errors) {
+    if (item.children && item.children.length > 0) {
+      errors = errors.concat(item.children);
+      delete item.children;
+    }
+  }
   return errors.map(({ property, value, constraints}) => ({
     property,
     value,

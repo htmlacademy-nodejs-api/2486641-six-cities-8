@@ -102,7 +102,6 @@ export class OfferController extends BaseController{
     res: Response
   ): Promise<void> {
     const result = await this.offerService.create({...body, userId: tokenPayload.id});
-    console.log(result);
     this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
@@ -112,7 +111,6 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const {offerId} = params;
     const result = await this.offerService.findById(offerId);
-    console.log(result);
     this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 

@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer';
 
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 import { Location } from '../../../types/location.type.js';
+import { City } from '../../../types/city.type.js';
 
 export class ShowOfferRdo {
   @Expose()
@@ -17,7 +18,7 @@ export class ShowOfferRdo {
   public postDate: string;
 
   @Expose()
-  public cityName: string;
+  public city: City;
 
   @Expose()
   public previewImage: string;
@@ -54,7 +55,7 @@ export class ShowOfferRdo {
   public user: UserRdo;
 
   @Expose()
-  public commentCount: number;
+  public commentsCount: number;
 
   @Expose()
   public location: Location;

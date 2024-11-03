@@ -3,7 +3,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5ydSIsIm5hbWUiOiJEZW5pcyIsImlkIjoiNjcyNWRkOGU0ZGVjYTc0MTMxNDE1ZWJhIiwiaWF0IjoxNzMwNTQ0MjYyLCJleHAiOjE3MzA3MTcwNjJ9.r3gUO1-VjWijfbG8VCHouJLKZm-s2LPfw9i7Yq8sEN4
 
 {
-  "offerId": "6725c8562603e2bf4ad4363c",
+  "offerId": "67271285088cc8e8730dee15",
   "text": "Awesome!",
   "rating": 5
 }

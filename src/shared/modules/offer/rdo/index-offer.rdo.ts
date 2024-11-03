@@ -29,5 +29,5 @@ export class IndexOfferRdo {
   public rating: number;
 
   @Expose()
-  public commentCount: number;
+  public commentsCount: number;
 }
