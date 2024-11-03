@@ -1,6 +1,9 @@
 import { MinLength, MaxLength, ArrayMinSize, ArrayMaxSize, IsBoolean, IsNumber, Min, Max, IsEnum, IsInt, ArrayUnique } from 'class-validator';
 import { Good, HouseType, Location } from '../../../types/index.js';
 import { CreateUpdateOfferValidationMessage } from './create-update-offer.messages.js';
+import { Type } from 'class-transformer';
+import { CreateLocationDto } from './create-location.dto.js';
+import { CityName } from '../../../types/city-name.enum.js';
 
 export class UpdateOfferDto {
   @MinLength(10, { message: CreateUpdateOfferValidationMessage.title.minLength })
@@ -11,17 +14,19 @@ export class UpdateOfferDto {
   @MaxLength(1024, { message: CreateUpdateOfferValidationMessage.description.maxLength })
   public description: string;
 
+  @IsEnum(CityName, { message: CreateUpdateOfferValidationMessage.cityName.invalid })
   public cityName: string;
+
   public previewImage: string;
 
   @ArrayMinSize(6, { message: CreateUpdateOfferValidationMessage.images.count })
   @ArrayMaxSize(6, { message: CreateUpdateOfferValidationMessage.images.count })
   public images: string[];
 
-  @IsBoolean()
+  @IsBoolean({message: CreateUpdateOfferValidationMessage.isPremium.invalidFormat})
   public isPremium: boolean;
 
-  @IsBoolean()
+  @IsBoolean({message: CreateUpdateOfferValidationMessage.isFavorite.invalidFormat})
   public isFavorite: boolean;
 
   @IsNumber({ maxDecimalPlaces: 1}, { message: CreateUpdateOfferValidationMessage.rating.invalidFormat })
@@ -52,5 +57,6 @@ export class UpdateOfferDto {
   @ArrayMinSize(1, { message: CreateUpdateOfferValidationMessage.goods.minValue })
   public goods: Good[];
 
+  @Type(() => CreateLocationDto)
   public location: Location;
 }

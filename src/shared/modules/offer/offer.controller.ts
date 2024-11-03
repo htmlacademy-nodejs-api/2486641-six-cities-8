@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, DocumentExistsMiddleware, HttpMethod, PrivateRouteMiddleware, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
+import { BaseController, DocumentExistsMiddleware, HttpError, HttpMethod, PrivateRouteMiddleware, RequestQuery, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/logger.interface.js';
 import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
@@ -14,6 +14,8 @@ import { ParamCityName } from './type/param-cityname.type.js';
 import { CommentService } from '../comment/comment-service.interface.js';
 import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
+import { Types } from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
 
 @injectable()
 export class OfferController extends BaseController{
@@ -57,7 +59,8 @@ export class OfferController extends BaseController{
       method: HttpMethod.Delete,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('offerId')
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
     this.addRoute({
@@ -79,6 +82,11 @@ export class OfferController extends BaseController{
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
+  }
+
+  private async checkOwner(offerId: string, userId: string) {
+    const offer = await this.offerService.findById(offerId);
+    return (offer?.userId._id.equals(new Types.ObjectId(userId)));
   }
 
   public async index(
@@ -107,20 +115,31 @@ export class OfferController extends BaseController{
   }
 
   public async update(
-    { body, params }: Request<ParamOfferId, unknown, UpdateOfferDto>,
+    { body, params, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;
+    const userId = tokenPayload.id;
+    const owner = await this.checkOwner(offerId, userId);
+    if (!owner) {
+      throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t update. You\'re not the owner', 'OfferController');
+    }
     const result = await this.offerService.update(offerId, body);
     this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async delete(
-    { params }: Request<ParamOfferId>,
+    { params, tokenPayload }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
     const { offerId } = params;
+    const userId = tokenPayload.id;
+    const owner = await this.checkOwner(offerId, userId);
+    if (!owner) {
+      throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t delete. You\'re not the owner', 'OfferController');
+    }
     const result = await this.offerService.delete(offerId);
+    await this.commentService.deleteByOfferId(offerId);
     this.noContent(res, result);
   }
 

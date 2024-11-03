@@ -21,6 +21,9 @@ export const CreateUpdateOfferValidationMessage = {
   type: {
     invalid: 'type must be one of apartment, house, room, hotel',
   },
+  cityName: {
+    invalid: 'cityName must be one of Paris, Cologne, Brussels, Amsterdam, Hamburg, Dusseldorf',
+  },
   roomsCount: {
     invalidFormat: 'Count must be an integer',
     minValue: 'Minimum rooms count is 1',
@@ -43,5 +46,11 @@ export const CreateUpdateOfferValidationMessage = {
     invalid: 'Good must be one of Breakfast, Air conditioning, Laptop friendly workspace, Baby seat, Washer, Towels, Fridge',
     unique: 'Goods must be unique',
     minValue: 'Minimum goods count is 1'
+  },
+  isPremium: {
+    invalidFormat: 'isPremium must be an boolean',
+  },
+  isFavorite: {
+    invalidFormat: 'isFavorite must be an boolean',
   }
 } as const;

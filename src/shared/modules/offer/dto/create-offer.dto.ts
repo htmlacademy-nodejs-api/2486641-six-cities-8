@@ -1,6 +1,9 @@
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsDateString, IsEnum, IsInt, IsMongoId, IsNumber, Max, MaxLength, Min, MinLength } from 'class-validator';
-import { Good, HouseType, Location } from '../../../types/index.js';
-import { CreateUpdateOfferValidationMessage } from '../index.js';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsDateString, IsEnum, IsInt, IsNotEmptyObject, IsNumber, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import { Good, HouseType } from '../../../types/index.js';
+import { CreateUpdateOfferValidationMessage } from './create-update-offer.messages.js';
+import { CityName } from '../../../types/city-name.enum.js';
+import { CreateLocationDto } from './create-location.dto.js';
+import { Type } from 'class-transformer';
 
 export class CreateOfferDto {
   @MinLength(10, { message: CreateUpdateOfferValidationMessage.title.minLength })
@@ -14,17 +17,19 @@ export class CreateOfferDto {
   @IsDateString({}, { message: CreateUpdateOfferValidationMessage.postDate.invalidFormat })
   public postDate: Date;
 
+  @IsEnum(CityName, { message: CreateUpdateOfferValidationMessage.cityName.invalid })
   public cityName: string;
+
   public previewImage: string;
 
   @ArrayMinSize(6, { message: CreateUpdateOfferValidationMessage.images.count })
   @ArrayMaxSize(6, { message: CreateUpdateOfferValidationMessage.images.count })
   public images: string[];
 
-  @IsBoolean()
+  @IsBoolean({message: CreateUpdateOfferValidationMessage.isPremium.invalidFormat})
   public isPremium: boolean;
 
-  @IsBoolean()
+  @IsBoolean({message: CreateUpdateOfferValidationMessage.isFavorite.invalidFormat})
   public isFavorite: boolean;
 
   @IsNumber({ maxDecimalPlaces: 1}, { message: CreateUpdateOfferValidationMessage.rating.invalidFormat })
@@ -55,8 +60,10 @@ export class CreateOfferDto {
   @ArrayMinSize(1, { message: CreateUpdateOfferValidationMessage.goods.minValue })
   public goods: Good[];
 
-  @IsMongoId({ message: CreateUpdateOfferValidationMessage.userId.invalidId })
   public userId: string;
 
-  public location: Location;
+  @IsNotEmptyObject()
+  @ValidateNested()
+  @Type(() => CreateLocationDto)
+  public location: CreateLocationDto;
 }

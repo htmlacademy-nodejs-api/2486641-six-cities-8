@@ -1,6 +1,6 @@
 import { FileReader } from './file-reader.interface.js';
 import { Offer, HouseType, City, Good, Location, User } from '../../types/index.js';
-import { Cities } from '../../../const.js';
+import { Cities } from '../../types/cities.js';
 import EventEmitter from 'node:events';
 import { createReadStream } from 'node:fs';
 

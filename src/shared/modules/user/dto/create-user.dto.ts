@@ -9,9 +9,6 @@ export class CreateUserDto {
   @IsEmail({}, { message: CreateUserMessages.email.invalidFormat })
   public email: string;
 
-  @IsString({ message: CreateUserMessages.avatarUrl.invalidFormat })
-  public avatarUrl: string;
-
   @IsBoolean({ message: CreateUserMessages.isPro.invalidFormat})
   public isPro: boolean;
 

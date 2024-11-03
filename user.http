@@ -1,0 +1,31 @@
+POST http://localhost:5000/users/register HTTP/1.1
+Content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5ydSIsIm5hbWUiOiJEZW5pcyIsImlkIjoiNjcyNWRkOGU0ZGVjYTc0MTMxNDE1ZWJhIiwiaWF0IjoxNzMwNTM1NzUzLCJleHAiOjE3MzA3MDg1NTN9.lgO9OtWz5m8QCUf__wHXWE1N5CDAnFIBRIjuk5CGBKk
+
+{
+  "email": "zdv2@htmlacademy.ru",
+  "password": "123456",
+  "name": "Denis",
+  "isPro": true
+}
+
+###
+
+POST http://localhost:5000/users/login HTTP/1.1
+Content-type: application/json
+
+{
+  "email": "zdv2@htmlacademy.ru",
+  "password": "123456"
+}
+
+###
+
+GET http://localhost:5000/users/login HTTP/1.1
+Content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdjJAaHRtbGFjYWRlbXkucnUiLCJuYW1lIjoiRGVuaXMiLCJpZCI6IjY3MjVlMTg3YThhNzNiYWQ1ODlhMjYzMyIsImlhdCI6MTczMDU2MjUwMywiZXhwIjoxNzMwNzM1MzAzfQ.YMfMQPpqQjWboCcEUPXYocnF5Z9rr7A1ulSD4dG68BU
+
+###
+
+GET http://localhost:5000/users/login HTTP/1.1
+Content-type: application/json

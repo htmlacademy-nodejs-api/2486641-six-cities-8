@@ -4,6 +4,11 @@ import { UserRdo } from '../../user/rdo/user.rdo.js';
 import { Location } from '../../../types/location.type.js';
 
 export class ShowOfferRdo {
+  // constructor(partial: Partial<ShowOfferRdo>) {
+  //   Object.assign(this, partial);
+  //   this.city = getCity(this.cityName);
+  // }
+
   @Expose()
   public id: string;
 
@@ -17,7 +22,15 @@ export class ShowOfferRdo {
   public postDate: string;
 
   @Expose()
+  // @Transform((value) => ({
+  //   name: value,
+  //   id: 1
+  // }))
   public cityName: string;
+
+  // @Expose()
+  // @Transform(() => 'Gorod')
+  // public city: City;
 
   @Expose()
   public previewImage: string;
@@ -54,7 +67,7 @@ export class ShowOfferRdo {
   public user: UserRdo;
 
   @Expose()
-  public commentCount: number;
+  public commentsCount: number;
 
   @Expose()
   public location: Location;

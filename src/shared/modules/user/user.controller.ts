@@ -14,7 +14,6 @@ import { LoginUserRequest } from './login-user-request.type.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { LoginUserDto } from './dto/login-user.dto.js';
 import { AuthService } from '../auth/index.js';
-import { LoggedUserRdo } from './rdo/logged-user.rdo.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -56,9 +55,16 @@ export class UserController extends BaseController {
   }
 
   public async create(
-    {body}: CreateUserRequest,
+    { body, tokenPayload }: CreateUserRequest,
     res: Response,
   ): Promise<void> {
+    if (tokenPayload) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Current user already authorized',
+        'UserController'
+      );
+    }
     const existsUser = await this.userService.findByEmail(body.email);
 
     if (existsUser) {
@@ -79,11 +85,7 @@ export class UserController extends BaseController {
   ): Promise<void> {
     const user = await this.authService.verify(body);
     const token = await this.authService.authenticate(user);
-    const responseData = fillDTO(LoggedUserRdo, {
-      email: user.email,
-      token,
-    });
-    this.ok(res, responseData);
+    this.ok(res, { token });
   }
 
   public async uploadAvatar(req: Request, res: Response) {
@@ -92,8 +94,16 @@ export class UserController extends BaseController {
     });
   }
 
-  public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
-    const foundedUser = await this.userService.findByEmail(email);
+  public async checkAuthenticate({ tokenPayload }: Request, res: Response) {
+    console.log('tokenPayload', tokenPayload);
+    if (!tokenPayload) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
+    }
+    const foundedUser = await this.userService.findByEmail(tokenPayload.email);
 
     if (! foundedUser) {
       throw new HttpError(
@@ -103,6 +113,6 @@ export class UserController extends BaseController {
       );
     }
 
-    this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+    this.ok(res, fillDTO(UserRdo, foundedUser));
   }
 }

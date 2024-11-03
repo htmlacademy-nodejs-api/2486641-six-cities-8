@@ -7,6 +7,7 @@ import { DefaultOfferService } from './default-offer.service.js';
 import { OfferEntity, OfferModel } from './offer.entity.js';
 import { OfferController } from './offer.controller.js';
 import { Controller } from '../../libs/rest/index.js';
+import { FavoriteController } from '../favorite/favorite.controller.js';
 
 export function createOfferContainer() {
   const offerContainer = new Container();
@@ -14,6 +15,7 @@ export function createOfferContainer() {
   offerContainer.bind<OfferService>(Component.OfferService).to(DefaultOfferService);
   offerContainer.bind<types.ModelType<OfferEntity>>(Component.OfferModel).toConstantValue(OfferModel);
   offerContainer.bind<Controller>(Component.OfferController).to(OfferController).inSingletonScope();
+  offerContainer.bind<Controller>(Component.FavoriteController).to(FavoriteController).inSingletonScope();
 
   return offerContainer;
 }
