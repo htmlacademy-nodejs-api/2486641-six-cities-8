@@ -1,4 +1,4 @@
-import { IsInt, IsMongoId, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { IsInt, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { CreateCommentValidationMessage } from './create-comment.messages.js';
 
 export class CreateCommentDto {
@@ -14,6 +14,5 @@ export class CreateCommentDto {
 
   public userId: string;
 
-  @IsMongoId({ message: CreateCommentValidationMessage.offerId.invalidId })
   public offerId: string;
 }

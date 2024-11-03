@@ -5,9 +5,11 @@ import type { UserAuth, Offer, Comment, CommentAuth, FavoriteAuth, UserRegister,
 import { ApiRoute, AppRoute, HttpCode } from '../const';
 import { Token } from '../utils';
 import UserDto from '../dto/user/user.dto';
-import { adaptLoginToClient, adaptUserToClient } from '../utils/adapters/adaptersToClient';
+import { adaptCommentsToClient, adaptCommentToClient, adaptLoginToClient, adaptOffersToClient, adaptOfferToClient, adaptUserToClient } from '../utils/adapters/adaptersToClient';
 import UserWithTokenDto from '../dto/user/user-with-token.dto';
-import { adaptPostOfferToServer, adaptSignupToServer } from '../utils/adapters/adaptersToServer';
+import { adaptCommentToServer, adaptPostOfferToServer, adaptSignupToServer } from '../utils/adapters/adaptersToServer';
+import { OfferDto } from '../dto/offer/offer.dto';
+import { CommentDto } from '../dto/comment/comment.dto';
 
 type Extra = {
   api: AxiosInstance;
@@ -36,9 +38,8 @@ export const fetchOffers = createAsyncThunk<Offer[], undefined, { extra: Extra }
   Action.FETCH_OFFERS,
   async (_, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Offer[]>(ApiRoute.Offers);
-
-    return data;
+    const { data } = await api.get<OfferDto[]>(ApiRoute.Offers);
+    return adaptOffersToClient(data);
   });
 
 export const fetchFavoriteOffers = createAsyncThunk<Offer[], undefined, { extra: Extra }>(
@@ -56,9 +57,9 @@ export const fetchOffer = createAsyncThunk<Offer, Offer['id'], { extra: Extra }>
     const { api, history } = extra;
 
     try {
-      const { data } = await api.get<Offer>(`${ApiRoute.Offers}/${id}`);
+      const { data } = await api.get<OfferDto>(`${ApiRoute.Offers}/${id}`);
 
-      return data;
+      return adaptOfferToClient(data);
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -74,10 +75,10 @@ export const postOffer = createAsyncThunk<Offer, NewOffer, { extra: Extra }>(
   Action.POST_OFFER,
   async (newOffer, { extra }) => {
     const { api, history } = extra;
-    const { data } = await api.post<Offer>(ApiRoute.Offers, adaptPostOfferToServer(newOffer));
+    const { data } = await api.post<OfferDto>(ApiRoute.Offers, adaptPostOfferToServer(newOffer));
     history.push(`${AppRoute.Property}/${data.id}`);
 
-    return data;
+    return adaptOfferToClient(data);
   });
 
 export const editOffer = createAsyncThunk<Offer, Offer, { extra: Extra }>(
@@ -111,9 +112,9 @@ export const fetchComments = createAsyncThunk<Comment[], Offer['id'], { extra: E
   Action.FETCH_COMMENTS,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Comment[]>(`${ApiRoute.Offers}/${id}${ApiRoute.Comments}`);
+    const { data } = await api.get<CommentDto[]>(`${ApiRoute.Offers}/${id}${ApiRoute.Comments}`);
 
-    return data;
+    return adaptCommentsToClient(data);
   });
 
 export const fetchUserStatus = createAsyncThunk<UserAuth['email'], undefined, { extra: Extra }>(
@@ -184,9 +185,9 @@ export const postComment = createAsyncThunk<Comment, CommentAuth, { extra: Extra
   Action.POST_COMMENT,
   async ({ id, comment, rating }, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<Comment>(`${ApiRoute.Offers}/${id}${ApiRoute.Comments}`, { comment, rating });
+    const { data } = await api.post<CommentDto>(`${ApiRoute.Offers}/${id}${ApiRoute.Comments}`, adaptCommentToServer({comment, rating}));
 
-    return data;
+    return adaptCommentToClient(data);
   });
 
 export const postFavorite = createAsyncThunk<

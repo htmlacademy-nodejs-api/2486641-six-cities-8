@@ -1,4 +1,4 @@
-import { Type } from '../../types/types';
+import { City, Type } from '../../types/types';
 import UserDto from '../user/user.dto';
 import { Location } from './create-offer.dto';
 
@@ -11,7 +11,7 @@ export class OfferDto {
 
   postDate!: string;
 
-  cityName!: string;
+  city!: City;
 
   previewImage!: string;
 

@@ -56,8 +56,7 @@ export class ImportCommand implements Command {
       isFavorite: offer.isFavorite,
       isPremium: offer.isPremium,
       location: offer.location,
-      previewImage: offer.previewImage,
-      rating: offer.rating
+      previewImage: offer.previewImage
     });
 
   }

@@ -1,4 +1,5 @@
 import { UserType } from '../../const';
+import { CreateCommentDto } from '../../dto/comment/create-comment.dto';
 import { CreateOfferDto } from '../../dto/offer/create-offer.dto';
 import CreateUserDto from '../../dto/user/create-user.dto';
 import { NewOffer, UserRegister } from '../../types/types';
@@ -27,4 +28,9 @@ export const adaptPostOfferToServer = (offer: NewOffer): CreateOfferDto => ({
   price: offer.price,
   goods: offer.goods,
   location: offer.location
+});
+
+export const adaptCommentToServer = (comment: {comment: string, rating: number}): CreateCommentDto => ({
+  text: comment.comment,
+  rating: comment.rating
 });

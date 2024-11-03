@@ -6,11 +6,6 @@ import { City } from '../../../types/city.type.js';
 import { getCity } from '../../../types/cities.js';
 
 export class ShowOfferRdo {
-  // constructor(partial: Partial<ShowOfferRdo>) {
-  //   Object.assign(this, partial);
-  //   this.city = getCity(this.cityName);
-  // }
-
   @Expose()
   public id: string;
 

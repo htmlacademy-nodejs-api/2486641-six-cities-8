@@ -15,6 +15,7 @@ import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
+import { CreateCommentDto } from '../comment/index.js';
 
 @injectable()
 export class OfferController extends BaseController{
@@ -81,6 +82,17 @@ export class OfferController extends BaseController{
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Post,
+      handler: this.createComment,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateDtoMiddleware(CreateCommentDto)
+      ]
+    });
+
   }
 
   private async checkOwner(offerId: string, userId: string) {
@@ -93,7 +105,7 @@ export class OfferController extends BaseController{
     res: Response
   ): Promise<void> {
     const result = await this.offerService.findAll(query.limit);
-    this.ok(res, fillDTO(IndexOfferRdo, result));
+    this.ok(res, fillDTO(/*IndexOfferRdo*/ShowOfferRdo, result));
   }
 
   public async create(
@@ -159,5 +171,15 @@ export class OfferController extends BaseController{
   public async getComments(req: Request, res: Response): Promise<void> {
     const result = await this.commentService.findByOfferId(req.params.offerId);
     this.ok(res, fillDTO(CommentRdo, result));
+  }
+
+  public async createComment(
+    {body, params, tokenPayload}: Request<Record<string, string>, Record<string, unknown>, CreateCommentDto>,
+    res: Response
+  ): Promise<void> {
+    const offerId = params.offerId;
+    const result = await this.commentService.create({...body, userId: tokenPayload.id, offerId: offerId});
+    await this.offerService.incCommentCount(offerId);
+    this.created(res, result);
   }
 }

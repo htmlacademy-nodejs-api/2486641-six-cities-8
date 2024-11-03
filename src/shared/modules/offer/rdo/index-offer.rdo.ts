@@ -1,4 +1,6 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
+import { getCity } from '../../../types/cities.js';
+import { City } from '../../../types/city.type.js';
 
 export class IndexOfferRdo {
   @Expose()
@@ -16,8 +18,9 @@ export class IndexOfferRdo {
   @Expose()
   public postDate: string;
 
-  @Expose()
-  public cityName: string;
+  @Expose({ name: 'cityName' })
+  @Transform(({ value }) => getCity(value))
+  public city: City;
 
   @Expose()
   public previewImage: string;

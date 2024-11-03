@@ -22,7 +22,6 @@ export class RestApplication {
     @inject(Component.DatabaseClient) private readonly databaseClient: DatabaseClient,
     @inject(Component.UserController) private readonly userController: Controller,
     @inject(Component.OfferController) private readonly offerController: Controller,
-    @inject(Component.CommentController) private readonly commentController: Controller,
     @inject(Component.FavoriteController) private readonly favoriteController: Controller,
     @inject(Component.ExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
@@ -52,7 +51,6 @@ export class RestApplication {
   private async _initControllers() {
     this.server.use('/users', this.userController.router);
     this.server.use('/offers', this.offerController.router);
-    this.server.use('/comments', this.commentController.router);
     this.server.use('/favorites', this.favoriteController.router);
   }
 
