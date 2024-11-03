@@ -1,9 +1,13 @@
 import type { History } from 'history';
 import type { AxiosInstance, AxiosError } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { UserAuth, User, Offer, Comment, CommentAuth, FavoriteAuth, UserRegister, NewOffer } from '../types/types';
+import type { UserAuth, Offer, Comment, CommentAuth, FavoriteAuth, UserRegister, NewOffer } from '../types/types';
 import { ApiRoute, AppRoute, HttpCode } from '../const';
 import { Token } from '../utils';
+import UserDto from '../dto/user/user.dto';
+import { adaptLoginToClient, adaptUserToClient } from '../utils/adapters/adaptersToClient';
+import UserWithTokenDto from '../dto/user/user-with-token.dto';
+import { adaptSignupToServer } from '../utils/adapters/adaptersToServer';
 
 type Extra = {
   api: AxiosInstance;
@@ -118,9 +122,9 @@ export const fetchUserStatus = createAsyncThunk<UserAuth['email'], undefined, { 
     const { api } = extra;
 
     try {
-      const { data } = await api.get<User>(ApiRoute.Login);
+      const { data } = await api.get<UserDto>(ApiRoute.Login);
 
-      return data.email;
+      return adaptUserToClient(data).email;
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -136,8 +140,8 @@ export const loginUser = createAsyncThunk<UserAuth['email'], UserAuth, { extra: 
   Action.LOGIN_USER,
   async ({ email, password }, { extra }) => {
     const { api, history } = extra;
-    const { data } = await api.post<User & { token: string }>(ApiRoute.Login, { email, password });
-    const { token } = data;
+    const { data } = await api.post<UserWithTokenDto>(ApiRoute.Login, { email, password });
+    const { token } = adaptLoginToClient(data);
 
     Token.save(token);
     history.push(AppRoute.Root);
@@ -157,17 +161,18 @@ export const logoutUser = createAsyncThunk<void, undefined, { extra: Extra }>(
 export const registerUser = createAsyncThunk<void, UserRegister, { extra: Extra }>(
   Action.REGISTER_USER,
   async ({ email, password, name, avatar, type }, { extra }) => {
-    const { api, history } = extra;
-    const { data } = await api.post<{ id: string }>(ApiRoute.Register, {
+    const userData = adaptSignupToServer({
       email,
       password,
       name,
       type,
     });
-    if (avatar) {
+    const { api, history } = extra;
+    const { data } = await api.post<{ id: string }>(ApiRoute.Register, userData);
+    if (avatar?.name) {
       const payload = new FormData();
       payload.append('avatar', avatar);
-      await api.post(`/${data.id}${ApiRoute.Avatar}`, payload, {
+      await api.post(`${ApiRoute.Users}/${data.id}${ApiRoute.Avatar}`, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     }

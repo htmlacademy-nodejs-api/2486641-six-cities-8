@@ -1,4 +1,4 @@
-export default class UserDto {
+export default class UserWithTokenDto {
   public email!: string ;
 
   public avatarUrl!: string;
@@ -6,4 +6,6 @@ export default class UserDto {
   public name!: string;
 
   public isPro!: boolean;
+
+  public token!: string;
 }
