@@ -5,7 +5,6 @@ import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
 import { Request, Response } from 'express';
 import { ParamOfferId } from './type/param-offerid.type.js';
-import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { CreateOfferRequest } from './type/create-offer-request.type.js';
 import { fillDTO } from '../../helpers/common.js';
 import { ShowOfferRdo } from './rdo/show-offer.rdo.js';
@@ -49,7 +48,7 @@ export class OfferController extends BaseController{
       method: HttpMethod.Put,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(UpdateOfferDto),
+        new ValidateDtoMiddleware(CreateOfferDto),
         new ValidateObjectIdMiddleware('offerId'),
       ]
     });
@@ -115,7 +114,7 @@ export class OfferController extends BaseController{
   }
 
   public async update(
-    { body, params, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>,
+    { body, params, tokenPayload }: Request<ParamOfferId, unknown, CreateOfferDto>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;

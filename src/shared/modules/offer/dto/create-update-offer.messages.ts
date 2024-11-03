@@ -7,9 +7,6 @@ export const CreateUpdateOfferValidationMessage = {
     minLength: 'Minimum description length must be 20',
     maxLength: 'Maximum description length must be 1024',
   },
-  postDate: {
-    invalidFormat: 'postDate must be a valid ISO date',
-  },
   images: {
     count: 'Count of images must be 6',
   },

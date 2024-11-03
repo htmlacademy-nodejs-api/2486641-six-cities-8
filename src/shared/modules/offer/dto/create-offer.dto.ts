@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsDateString, IsEnum, IsInt, IsNotEmptyObject, IsNumber, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsEnum, IsInt, IsNotEmptyObject, IsNumber, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
 import { Good, HouseType } from '../../../types/index.js';
 import { CreateUpdateOfferValidationMessage } from './create-update-offer.messages.js';
 import { CityName } from '../../../types/city-name.enum.js';
@@ -13,9 +13,6 @@ export class CreateOfferDto {
   @MinLength(20, { message: CreateUpdateOfferValidationMessage.description.minLength })
   @MaxLength(1024, { message: CreateUpdateOfferValidationMessage.description.maxLength })
   public description: string;
-
-  @IsDateString({}, { message: CreateUpdateOfferValidationMessage.postDate.invalidFormat })
-  public postDate: Date;
 
   @IsEnum(CityName, { message: CreateUpdateOfferValidationMessage.cityName.invalid })
   public cityName: string;

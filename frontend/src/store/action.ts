@@ -7,7 +7,7 @@ import { Token } from '../utils';
 import UserDto from '../dto/user/user.dto';
 import { adaptLoginToClient, adaptUserToClient } from '../utils/adapters/adaptersToClient';
 import UserWithTokenDto from '../dto/user/user-with-token.dto';
-import { adaptSignupToServer } from '../utils/adapters/adaptersToServer';
+import { adaptPostOfferToServer, adaptSignupToServer } from '../utils/adapters/adaptersToServer';
 
 type Extra = {
   api: AxiosInstance;
@@ -74,7 +74,7 @@ export const postOffer = createAsyncThunk<Offer, NewOffer, { extra: Extra }>(
   Action.POST_OFFER,
   async (newOffer, { extra }) => {
     const { api, history } = extra;
-    const { data } = await api.post<Offer>(ApiRoute.Offers, newOffer);
+    const { data } = await api.post<Offer>(ApiRoute.Offers, adaptPostOfferToServer(newOffer));
     history.push(`${AppRoute.Property}/${data.id}`);
 
     return data;
