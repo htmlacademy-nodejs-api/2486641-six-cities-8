@@ -26,9 +26,6 @@ export class CreateOfferDto {
   @IsBoolean({message: CreateUpdateOfferValidationMessage.isPremium.invalidFormat})
   public isPremium: boolean;
 
-  @IsBoolean({message: CreateUpdateOfferValidationMessage.isFavorite.invalidFormat})
-  public isFavorite: boolean;
-
   @IsEnum(HouseType, { message: CreateUpdateOfferValidationMessage.type.invalid })
   public type: HouseType;
 

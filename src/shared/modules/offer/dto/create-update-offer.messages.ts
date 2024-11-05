@@ -47,7 +47,4 @@ export const CreateUpdateOfferValidationMessage = {
   isPremium: {
     invalidFormat: 'isPremium must be an boolean',
   },
-  isFavorite: {
-    invalidFormat: 'isFavorite must be an boolean',
-  }
 } as const;

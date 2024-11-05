@@ -46,7 +46,7 @@ export class OfferController extends BaseController{
     this.addRoute({
       path: '/:offerId',
       handler: this.update,
-      method: HttpMethod.Put,
+      method: HttpMethod.Patch,
       middlewares: [
         new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CreateOfferDto),
@@ -61,15 +61,6 @@ export class OfferController extends BaseController{
         new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
-      ]
-    });
-    this.addRoute({
-      path: '/:offerId/change-favorite',
-      handler: this.changeIsFavorite,
-      method: HttpMethod.Patch,
-      middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('offerId')
       ]
     });
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
@@ -96,15 +87,15 @@ export class OfferController extends BaseController{
   }
 
   private async checkOwner(offerId: string, userId: string) {
-    const offer = await this.offerService.findById(offerId);
+    const offer = await this.offerService.findById(offerId, userId);
     return (offer?.userId._id.equals(new Types.ObjectId(userId)));
   }
 
   public async index(
-    { query }: Request<unknown, unknown, unknown, RequestQuery>,
+    { query, tokenPayload }: Request<unknown, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.findAll(query.limit);
+    const result = await this.offerService.findAll(tokenPayload?.id, query.limit);
     this.ok(res, fillDTO(/*IndexOfferRdo*/ShowOfferRdo, result));
   }
 
@@ -117,11 +108,11 @@ export class OfferController extends BaseController{
   }
 
   public async show(
-    { params }: Request<ParamOfferId>,
+    { params, tokenPayload }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;
-    const result = await this.offerService.findById(offerId);
+    const result = await this.offerService.findById(offerId, tokenPayload.id);
     this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
@@ -152,15 +143,6 @@ export class OfferController extends BaseController{
     const result = await this.offerService.delete(offerId);
     await this.commentService.deleteByOfferId(offerId);
     this.noContent(res, result);
-  }
-
-  public async changeIsFavorite(
-    { params }: Request<ParamOfferId>,
-    res: Response
-  ): Promise<void> {
-    const {offerId} = params;
-    const result = await this.offerService.changeFavorite(offerId);
-    this.created(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async getPremiumByCity({ params }: Request<ParamCityName>, res: Response): Promise<void> {

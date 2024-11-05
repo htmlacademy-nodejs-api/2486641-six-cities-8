@@ -46,9 +46,8 @@ export const fetchFavoriteOffers = createAsyncThunk<Offer[], undefined, { extra:
   Action.FETCH_FAVORITE_OFFERS,
   async (_, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Offer[]>(ApiRoute.Favorite);
-
-    return data;
+    const { data } = await api.get<OfferDto[]>(ApiRoute.Favorite);
+    return adaptOffersToClient(data);
   });
 
 export const fetchOffer = createAsyncThunk<Offer, Offer['id'], { extra: Extra }>(
@@ -85,10 +84,10 @@ export const editOffer = createAsyncThunk<Offer, Offer, { extra: Extra }>(
   Action.EDIT_OFFER,
   async (offer, { extra }) => {
     const { api, history } = extra;
-    const { data } = await api.patch<Offer>(`${ApiRoute.Offers}/${offer.id}`, offer);
+    const { data } = await api.patch<OfferDto>(`${ApiRoute.Offers}/${offer.id}`, adaptPostOfferToServer(offer));
     history.push(`${AppRoute.Property}/${data.id}`);
 
-    return data;
+    return adaptOfferToClient(data);
   });
 
 export const deleteOffer = createAsyncThunk<void, string, { extra: Extra }>(
@@ -103,9 +102,9 @@ export const fetchPremiumOffers = createAsyncThunk<Offer[], string, { extra: Ext
   Action.FETCH_PREMIUM_OFFERS,
   async (cityName, { extra }) => {
     const { api } = extra;
-    const { data } = await api.get<Offer[]>(`${ApiRoute.Offers}?city=${cityName}${ApiRoute.Premium}`);
+    const { data } = await api.get<OfferDto[]>(`${ApiRoute.Offers}?city=${cityName}${ApiRoute.Premium}`);
 
-    return data;
+    return adaptOffersToClient(data);
   });
 
 export const fetchComments = createAsyncThunk<Comment[], Offer['id'], { extra: Extra }>(

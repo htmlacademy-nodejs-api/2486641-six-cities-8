@@ -20,7 +20,6 @@ export const adaptPostOfferToServer = (offer: NewOffer): CreateOfferDto => ({
   previewImage: offer.previewImage,
   images: offer.images,
   isPremium: offer.isPremium,
-  isFavorite: false,
   rating: 0,
   type: offer.type,
   bedroomsCount: offer.bedrooms,

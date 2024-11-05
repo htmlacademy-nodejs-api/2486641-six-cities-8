@@ -16,8 +16,6 @@ export class CreateOfferDto {
 
   public isPremium!: boolean;
 
-  public isFavorite!: boolean;
-
   public rating!: number;
 
   public type!: string;

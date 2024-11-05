@@ -22,8 +22,8 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, this.userService);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -41,7 +41,6 @@ export class ImportCommand implements Command {
       ...offer.author,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
-    console.log(offer);
     await this.offerService.create({
       userId: user.id,
       title: offer.title,
@@ -53,12 +52,10 @@ export class ImportCommand implements Command {
       goods: offer.goods,
       guestsCount: offer.guestsCount,
       images: offer.images,
-      isFavorite: offer.isFavorite,
       isPremium: offer.isPremium,
       location: offer.location,
       previewImage: offer.previewImage
     });
-
   }
 
   private onCompleteImport(count: number) {
