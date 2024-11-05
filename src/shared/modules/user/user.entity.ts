@@ -1,6 +1,7 @@
 import { defaultClasses, getModelForClass, modelOptions, prop } from '@typegoose/typegoose';
 import { User } from '../../types/index.js';
 import { createSHA256 } from '../../helpers/hash.js';
+import { Types } from 'mongoose';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface UserEntity extends defaultClasses.Base {}
@@ -27,6 +28,9 @@ export class UserEntity extends defaultClasses.TimeStamps implements User {
 
   @prop()
   public isPro: boolean;
+
+  @prop({ type: Types.ObjectId, required: true, default: [] })
+  public favoriteOffers: Types.Array<Types.ObjectId>;
 
   constructor(userData: User) {
     super();

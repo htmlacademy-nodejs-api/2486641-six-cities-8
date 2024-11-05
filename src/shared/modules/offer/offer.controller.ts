@@ -5,7 +5,6 @@ import { Component } from '../../types/component.enum.js';
 import { OfferService } from './offer-service.interface.js';
 import { Request, Response } from 'express';
 import { ParamOfferId } from './type/param-offerid.type.js';
-import { UpdateOfferDto } from './dto/update-offer.dto.js';
 import { CreateOfferRequest } from './type/create-offer-request.type.js';
 import { fillDTO } from '../../helpers/common.js';
 import { ShowOfferRdo } from './rdo/show-offer.rdo.js';
@@ -14,8 +13,8 @@ import { ParamCityName } from './type/param-cityname.type.js';
 import { CommentService } from '../comment/comment-service.interface.js';
 import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
-import { Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
+import { CreateCommentDto } from '../comment/index.js';
 
 @injectable()
 export class OfferController extends BaseController{
@@ -46,10 +45,10 @@ export class OfferController extends BaseController{
     this.addRoute({
       path: '/:offerId',
       handler: this.update,
-      method: HttpMethod.Put,
+      method: HttpMethod.Patch,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateDtoMiddleware(UpdateOfferDto),
+        new ValidateDtoMiddleware(CreateOfferDto),
         new ValidateObjectIdMiddleware('offerId'),
       ]
     });
@@ -63,15 +62,6 @@ export class OfferController extends BaseController{
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ]
     });
-    this.addRoute({
-      path: '/:offerId/change-favorite',
-      handler: this.changeIsFavorite,
-      method: HttpMethod.Patch,
-      middlewares: [
-        new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('offerId')
-      ]
-    });
     this.addRoute({path: '/:cityName/premium', handler: this.getPremiumByCity, method: HttpMethod.Get});
     this.addRoute({
       path: '/:offerId/comments',
@@ -82,19 +72,26 @@ export class OfferController extends BaseController{
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
       ],
     });
-  }
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Post,
+      handler: this.createComment,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId'),
+        new ValidateDtoMiddleware(CreateCommentDto)
+      ]
+    });
 
-  private async checkOwner(offerId: string, userId: string) {
-    const offer = await this.offerService.findById(offerId);
-    return (offer?.userId._id.equals(new Types.ObjectId(userId)));
   }
 
   public async index(
-    { query }: Request<unknown, unknown, unknown, RequestQuery>,
+    { query, tokenPayload }: Request<unknown, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.findAll(query.limit);
-    this.ok(res, fillDTO(IndexOfferRdo, result));
+    const userId = tokenPayload?.id ?? undefined;
+    const result = await this.offerService.findAll(userId, query.limit);
+    this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async create(
@@ -106,21 +103,22 @@ export class OfferController extends BaseController{
   }
 
   public async show(
-    { params }: Request<ParamOfferId>,
+    { params, tokenPayload }: Request<ParamOfferId>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;
-    const result = await this.offerService.findById(offerId);
+    const userId = tokenPayload?.id ?? undefined;
+    const result = await this.offerService.findById(offerId, userId);
     this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async update(
-    { body, params, tokenPayload }: Request<ParamOfferId, unknown, UpdateOfferDto>,
+    { body, params, tokenPayload }: Request<ParamOfferId, unknown, CreateOfferDto>,
     res: Response
   ): Promise<void> {
     const {offerId} = params;
     const userId = tokenPayload.id;
-    const owner = await this.checkOwner(offerId, userId);
+    const owner = await this.offerService.checkOwner(offerId, userId);
     if (!owner) {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t update. You\'re not the owner', 'OfferController');
     }
@@ -134,7 +132,7 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const { offerId } = params;
     const userId = tokenPayload.id;
-    const owner = await this.checkOwner(offerId, userId);
+    const owner = await this.offerService.checkOwner(offerId, userId);
     if (!owner) {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t delete. You\'re not the owner', 'OfferController');
     }
@@ -143,22 +141,23 @@ export class OfferController extends BaseController{
     this.noContent(res, result);
   }
 
-  public async changeIsFavorite(
-    { params }: Request<ParamOfferId>,
-    res: Response
-  ): Promise<void> {
-    const {offerId} = params;
-    const result = await this.offerService.changeFavorite(offerId);
-    this.created(res, fillDTO(ShowOfferRdo, result));
-  }
-
   public async getPremiumByCity({ params }: Request<ParamCityName>, res: Response): Promise<void> {
     const result = await this.offerService.findPremiumByCity(params.cityName);
     this.ok(res, fillDTO(IndexOfferRdo, result));
   }
 
-  public async getComments(req: Request, res: Response): Promise<void> {
-    const result = await this.commentService.findByOfferId(req.params.offerId);
+  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const result = await this.commentService.findByOfferId(params.offerId);
     this.ok(res, fillDTO(CommentRdo, result));
+  }
+
+  public async createComment(
+    {body, params, tokenPayload}: Request<ParamOfferId, unknown, CreateCommentDto>,
+    res: Response
+  ): Promise<void> {
+    const offerId = params.offerId;
+    const result = await this.commentService.create({...body, userId: tokenPayload.id, offerId: offerId});
+    await this.offerService.incCommentCount(offerId);
+    this.created(res, fillDTO(CommentRdo, result));
   }
 }

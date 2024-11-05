@@ -8,7 +8,4 @@ export const CreateCommentValidationMessage = {
     minValue: 'Minimum rating is 1',
     maxValue: 'Maximum rating is 5',
   },
-  offerId: {
-    invalidId: 'offerId field must be a valid id',
-  },
 } as const;

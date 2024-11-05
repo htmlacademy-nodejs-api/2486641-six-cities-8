@@ -1,14 +1,11 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 
 import { UserRdo } from '../../user/rdo/user.rdo.js';
 import { Location } from '../../../types/location.type.js';
+import { City } from '../../../types/city.type.js';
+import { getCity } from '../../../types/cities.js';
 
 export class ShowOfferRdo {
-  // constructor(partial: Partial<ShowOfferRdo>) {
-  //   Object.assign(this, partial);
-  //   this.city = getCity(this.cityName);
-  // }
-
   @Expose()
   public id: string;
 
@@ -18,19 +15,12 @@ export class ShowOfferRdo {
   @Expose()
   public description: string;
 
-  @Expose()
+  @Expose({ name: 'createdAt'})
   public postDate: string;
 
-  @Expose()
-  // @Transform((value) => ({
-  //   name: value,
-  //   id: 1
-  // }))
-  public cityName: string;
-
-  // @Expose()
-  // @Transform(() => 'Gorod')
-  // public city: City;
+  @Expose({ name: 'cityName' })
+  @Transform(({ value }) => getCity(value))
+  public city: City;
 
   @Expose()
   public previewImage: string;

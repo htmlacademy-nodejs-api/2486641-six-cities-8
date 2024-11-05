@@ -1,4 +1,4 @@
-import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsDateString, IsEnum, IsInt, IsNotEmptyObject, IsNumber, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
+import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsBoolean, IsEnum, IsInt, IsNotEmptyObject, Max, MaxLength, Min, MinLength, ValidateNested } from 'class-validator';
 import { Good, HouseType } from '../../../types/index.js';
 import { CreateUpdateOfferValidationMessage } from './create-update-offer.messages.js';
 import { CityName } from '../../../types/city-name.enum.js';
@@ -14,9 +14,6 @@ export class CreateOfferDto {
   @MaxLength(1024, { message: CreateUpdateOfferValidationMessage.description.maxLength })
   public description: string;
 
-  @IsDateString({}, { message: CreateUpdateOfferValidationMessage.postDate.invalidFormat })
-  public postDate: Date;
-
   @IsEnum(CityName, { message: CreateUpdateOfferValidationMessage.cityName.invalid })
   public cityName: string;
 
@@ -28,14 +25,6 @@ export class CreateOfferDto {
 
   @IsBoolean({message: CreateUpdateOfferValidationMessage.isPremium.invalidFormat})
   public isPremium: boolean;
-
-  @IsBoolean({message: CreateUpdateOfferValidationMessage.isFavorite.invalidFormat})
-  public isFavorite: boolean;
-
-  @IsNumber({ maxDecimalPlaces: 1}, { message: CreateUpdateOfferValidationMessage.rating.invalidFormat })
-  @Min(1, { message: CreateUpdateOfferValidationMessage.rating.minValue })
-  @Max(5, { message: CreateUpdateOfferValidationMessage.rating.maxValue })
-  public rating: number;
 
   @IsEnum(HouseType, { message: CreateUpdateOfferValidationMessage.type.invalid })
   public type: HouseType;

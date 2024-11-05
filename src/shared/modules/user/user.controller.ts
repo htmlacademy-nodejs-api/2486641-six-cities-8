@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { Response, Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { BaseController, HttpError, HttpMethod, UploadFileMiddleware, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
+import { BaseController, HttpError, HttpMethod, PrivateRouteMiddleware, UploadFileMiddleware, ValidateDtoMiddleware, ValidateObjectIdMiddleware } from '../../libs/rest/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { Component } from '../../types/index.js';
 import { CreateUserRequest } from './create-user-request.type.js';
@@ -52,6 +52,18 @@ export class UserController extends BaseController {
       method: HttpMethod.Get,
       handler: this.checkAuthenticate,
     });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Delete,
+      handler: this.logout,
+      middlewares: [
+        new PrivateRouteMiddleware()
+      ]
+    });
+  }
+
+  public logout(_req: Request, res: Response){
+    this.noContent(res, {});
   }
 
   public async create(
@@ -95,7 +107,6 @@ export class UserController extends BaseController {
   }
 
   public async checkAuthenticate({ tokenPayload }: Request, res: Response) {
-    console.log('tokenPayload', tokenPayload);
     if (!tokenPayload) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,

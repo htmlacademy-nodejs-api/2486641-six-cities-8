@@ -4,6 +4,7 @@ import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-
 import { TSVFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { Logger } from '../../shared/libs/logger/index.js';
+import { CommentModel } from '../../shared/modules/comment/comment.entity.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
 import { DefaultUserService, UserModel, UserService } from '../../shared/modules/user/index.js';
 import { Offer } from '../../shared/types/offer.type.js';
@@ -22,8 +23,8 @@ export class ImportCommand implements Command {
     this.onCompleteImport = this.onCompleteImport.bind(this);
 
     this.logger = new ConsoleLogger();
-    this.offerService = new DefaultOfferService(this.logger, OfferModel);
     this.userService = new DefaultUserService(this.logger, UserModel);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, this.userService, CommentModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
@@ -41,27 +42,21 @@ export class ImportCommand implements Command {
       ...offer.author,
       password: DEFAULT_USER_PASSWORD
     }, this.salt);
-    console.log(offer);
     await this.offerService.create({
       userId: user.id,
       title: offer.title,
       description: offer.description,
-      postDate: offer.postDate,
       price: offer.price,
       type: offer.type,
       bedroomsCount: offer.bedroomsCount,
       cityName: offer.city?.name ?? 'Paris',
-      //commentsCount: offer.commentsCount,
       goods: offer.goods,
       guestsCount: offer.guestsCount,
       images: offer.images,
-      isFavorite: offer.isFavorite,
       isPremium: offer.isPremium,
       location: offer.location,
-      previewImage: offer.previewImage,
-      rating: offer.rating
+      previewImage: offer.previewImage
     });
-
   }
 
   private onCompleteImport(count: number) {

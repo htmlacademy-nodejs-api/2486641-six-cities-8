@@ -36,4 +36,5 @@ export class DefaultCommentService implements CommentService {
     const result = await this.commentModel.deleteMany({offerId}).exec();
     return result.deletedCount;
   }
+
 }

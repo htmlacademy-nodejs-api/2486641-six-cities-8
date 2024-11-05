@@ -1,9 +1,10 @@
 GET http://localhost:5000/offers?limit=20 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImJhYnVzaGthMzNAbWFpbC5jb20iLCJuYW1lIjoiYmFidXNoa2EiLCJpZCI6IjY3Mjc3ZTE5NmUwMmU0MTE1ZmNhMzJlOCIsImlhdCI6MTczMDY0MTQ2NCwiZXhwIjoxNzMwODE0MjY0fQ.96uEZEvY1pQiNuH-eJ1d9_2L8GyWNAZMCCaPHK2xF28
 
 ###
 
-GET http://localhost:5000/offers/67271285088cc8e8730dee15 HTTP/1.1
+GET http://localhost:5000/offers/67278c476c7f83791776f130 HTTP/1.1
 Content-Type: application/json
 
 ###
@@ -15,7 +16,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5yd
 {
   "title": "Test title",
   "description": "Test description of offer",
-  "postDate": "2024-11-01T01:55:40.283Z",
   "cityName": "Paris",
   "images":[
     "https://16.design.htmlacademy.pro/static/hotel/1.jpg",
@@ -26,7 +26,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5yd
     "https://16.design.htmlacademy.pro/static/hotel/6.jpg"
   ],
   "isPremium": true,
-  "isFavorite": false,
   "rating": 5,
   "type": "house",
   "bedroomsCount": 3,
@@ -59,7 +58,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InpkdkBodG1sYWNhZGVteS5yd
     "https://16.design.htmlacademy.pro/static/hotel/6.jpg"
   ],
   "isPremium": true,
-  "isFavorite": false,
   "rating": 5,
   "type": "house",
   "bedroomsCount": 3,
