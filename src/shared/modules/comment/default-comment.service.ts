@@ -29,6 +29,7 @@ export class DefaultCommentService implements CommentService {
       .sort({createdAt: 'desc'})
       .limit(DEFAULT_COMMENT_COUNT);
     this.logger.info(`Find comments by offerId = ${offerId}`);
+    console.log(comments);
     return comments;
   }
 
@@ -36,4 +37,5 @@ export class DefaultCommentService implements CommentService {
     const result = await this.commentModel.deleteMany({offerId}).exec();
     return result.deletedCount;
   }
+
 }

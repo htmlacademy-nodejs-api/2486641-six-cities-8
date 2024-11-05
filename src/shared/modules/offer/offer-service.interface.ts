@@ -15,4 +15,5 @@ export interface OfferService extends DocumentExists {
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   addFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
   deleteFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
+  avgRating(offerId: string): Promise<number>;
 }

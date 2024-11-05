@@ -8,6 +8,7 @@ import { OfferEntity } from './offer.entity.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
 import { UserService } from '../user/user-service.interface.js';
 import { Types } from 'mongoose';
+import { CommentEntity } from '../comment/comment.entity.js';
 
 const DEFAULT_OFFER_COUNT = 60;
 @injectable()
@@ -15,7 +16,8 @@ export class DefaultOfferService implements OfferService {
   constructor(
     @inject(Component.Logger) private readonly logger: Logger,
     @inject(Component.OfferModel) private readonly offerModel: types.ModelType<OfferEntity>,
-    @inject(Component.UserService) private readonly userService: UserService
+    @inject(Component.UserService) private readonly userService: UserService,
+    @inject(Component.CommentModel) private readonly commentModel: types.ModelType<CommentEntity>,
   ) {}
 
   public async exists(documentId: string): Promise<boolean> {
@@ -75,6 +77,7 @@ export class DefaultOfferService implements OfferService {
     if (!offer) {
       return null;
     }
+    offer.rating = await this.avgRating(offerId);
 
     const user = await this.userService.getById(userId);
     if (user && user.favoriteOffers) {
@@ -95,9 +98,12 @@ export class DefaultOfferService implements OfferService {
       .exec();
 
     const user = await this.userService.getById(userId);
-    offers.forEach((offer) => {
+    offers.forEach(async (offer) => {
       offer.isFavorite = !!(user && user.favoriteOffers.includes(offer.id));
+      offer.rating = await this.avgRating(offer.id);
+      console.log(offer.rating);
     });
+    //console.log(offers);
     return offers;
   }
 
@@ -119,5 +125,29 @@ export class DefaultOfferService implements OfferService {
     user.favoriteOffers.pull(new Types.ObjectId(offerId));
     await user.save();
     return this.findById(offerId, userId);
+  }
+
+
+  public async avgRating(offerId: string): Promise<number> {
+    console.log(offerId);
+
+    //const offerObjId = (offerId instanceof Types.ObjectId) ? offerId : new Types.ObjectId(offerId);
+    const data = await this.commentModel.aggregate([
+      { $match: { offerId: new Types.ObjectId(offerId) } },
+      {
+        $group: {
+          _id: null,
+          averageRating: { $avg: '$rating' },
+        },
+      },
+      { $unset: '_id' },
+    ]);
+    if (data.length === 0) {
+      console.log('offerId =', offerId, 'rating = 0');
+      return 0;
+    }
+    const averageRating = parseFloat(data[0].averageRating.toFixed(1));
+    console.log('offerId =', offerId, 'rating =', averageRating);
+    return averageRating;
   }
 }

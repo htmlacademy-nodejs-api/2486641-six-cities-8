@@ -4,6 +4,7 @@ import { DatabaseClient, MongoDatabaseClient } from '../../shared/libs/database-
 import { TSVFileReader } from '../../shared/libs/file-reader/tsv-file-reader.js';
 import { ConsoleLogger } from '../../shared/libs/logger/console.logger.js';
 import { Logger } from '../../shared/libs/logger/index.js';
+import { CommentModel } from '../../shared/modules/comment/comment.entity.js';
 import { DefaultOfferService, OfferModel, OfferService } from '../../shared/modules/offer/index.js';
 import { DefaultUserService, UserModel, UserService } from '../../shared/modules/user/index.js';
 import { Offer } from '../../shared/types/offer.type.js';
@@ -23,7 +24,7 @@ export class ImportCommand implements Command {
 
     this.logger = new ConsoleLogger();
     this.userService = new DefaultUserService(this.logger, UserModel);
-    this.offerService = new DefaultOfferService(this.logger, OfferModel, this.userService);
+    this.offerService = new DefaultOfferService(this.logger, OfferModel, this.userService, CommentModel);
     this.databaseClient = new MongoDatabaseClient(this.logger);
   }
 
