@@ -49,7 +49,7 @@ export class FavoriteController extends BaseController{
     res: Response
   ): Promise<void> {
     const result = await this.offerService.findFavorite(tokenPayload.id);
-    this.ok(res, fillDTO(/*IndexOfferRdo*/ShowOfferRdo, result));
+    this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async addFavorite({params, tokenPayload}: Request, res: Response): Promise<void> {

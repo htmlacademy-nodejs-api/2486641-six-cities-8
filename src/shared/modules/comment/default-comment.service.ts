@@ -29,7 +29,6 @@ export class DefaultCommentService implements CommentService {
       .sort({createdAt: 'desc'})
       .limit(DEFAULT_COMMENT_COUNT);
     this.logger.info(`Find comments by offerId = ${offerId}`);
-    console.log(comments);
     return comments;
   }
 

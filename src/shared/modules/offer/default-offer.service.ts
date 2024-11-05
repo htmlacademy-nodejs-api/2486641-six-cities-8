@@ -77,7 +77,7 @@ export class DefaultOfferService implements OfferService {
     if (!offer) {
       return null;
     }
-    offer.rating = await this.avgRating(offerId);
+    offer.rating = await this.getAvgRating(offerId);
 
     const user = await this.userService.getById(userId);
     if (user && user.favoriteOffers) {
@@ -88,7 +88,7 @@ export class DefaultOfferService implements OfferService {
     return offer;
   }
 
-  public async findAll(userId: string, count?: number): Promise<DocumentType<OfferEntity>[]> {
+  public async findAll(userId?: string, count?: number): Promise<DocumentType<OfferEntity>[]> {
     const limit = count ?? DEFAULT_OFFER_COUNT;
     const offers = await this.offerModel
       .find()
@@ -97,13 +97,11 @@ export class DefaultOfferService implements OfferService {
       .populate(['userId'])
       .exec();
 
-    const user = await this.userService.getById(userId);
-    offers.forEach(async (offer) => {
+    const user = userId ? await this.userService.getById(userId) : undefined;
+    for (const offer of offers){
       offer.isFavorite = !!(user && user.favoriteOffers.includes(offer.id));
-      offer.rating = await this.avgRating(offer.id);
-      console.log(offer.rating);
-    });
-    //console.log(offers);
+      offer.rating = await this.getAvgRating(offer.id);
+    }
     return offers;
   }
 
@@ -128,10 +126,7 @@ export class DefaultOfferService implements OfferService {
   }
 
 
-  public async avgRating(offerId: string): Promise<number> {
-    console.log(offerId);
-
-    //const offerObjId = (offerId instanceof Types.ObjectId) ? offerId : new Types.ObjectId(offerId);
+  public async getAvgRating(offerId: string): Promise<number> {
     const data = await this.commentModel.aggregate([
       { $match: { offerId: new Types.ObjectId(offerId) } },
       {
@@ -143,11 +138,9 @@ export class DefaultOfferService implements OfferService {
       { $unset: '_id' },
     ]);
     if (data.length === 0) {
-      console.log('offerId =', offerId, 'rating = 0');
       return 0;
     }
     const averageRating = parseFloat(data[0].averageRating.toFixed(1));
-    console.log('offerId =', offerId, 'rating =', averageRating);
     return averageRating;
   }
 }

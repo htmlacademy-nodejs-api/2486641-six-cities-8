@@ -95,8 +95,9 @@ export class OfferController extends BaseController{
     { query, tokenPayload }: Request<unknown, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.findAll(tokenPayload?.id, query.limit);
-    this.ok(res, fillDTO(/*IndexOfferRdo*/ShowOfferRdo, result));
+    const userId = tokenPayload?.id ?? undefined;
+    const result = await this.offerService.findAll(userId, query.limit);
+    this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
   public async create(
@@ -112,7 +113,8 @@ export class OfferController extends BaseController{
     res: Response
   ): Promise<void> {
     const {offerId} = params;
-    const result = await this.offerService.findById(offerId, tokenPayload.id);
+    const userId = tokenPayload?.id ?? undefined;
+    const result = await this.offerService.findById(offerId, userId);
     this.ok(res, fillDTO(ShowOfferRdo, result));
   }
 
@@ -162,6 +164,6 @@ export class OfferController extends BaseController{
     const offerId = params.offerId;
     const result = await this.commentService.create({...body, userId: tokenPayload.id, offerId: offerId});
     await this.offerService.incCommentCount(offerId);
-    this.created(res, result);
+    this.created(res, fillDTO(CommentRdo, result));
   }
 }

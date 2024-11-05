@@ -7,7 +7,7 @@ import { DocumentExists } from '../../types/index.js';
 export interface OfferService extends DocumentExists {
   create(dto: CreateOfferDto): Promise<DocumentType<OfferEntity>>;
   findById(offerId: string, userId: string): Promise<DocumentType<OfferEntity> | null>;
-  findAll(userId: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
+  findAll(userId?: string, count?: number): Promise<DocumentType<OfferEntity>[]>;
   update(offerId: string, dto: CreateOfferDto): Promise<DocumentType<OfferEntity> | null>;
   delete(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   findPremiumByCity(cityName: string): Promise<DocumentType<OfferEntity>[]>;
@@ -15,5 +15,5 @@ export interface OfferService extends DocumentExists {
   incCommentCount(offerId: string): Promise<DocumentType<OfferEntity> | null>;
   addFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
   deleteFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
-  avgRating(offerId: string): Promise<number>;
+  getAvgRating(offerId: string): Promise<number>;
 }
