@@ -143,4 +143,10 @@ export class DefaultOfferService implements OfferService {
     const averageRating = parseFloat(data[0].averageRating.toFixed(1));
     return averageRating;
   }
+
+  public async checkOwner(offerId: string, userId: string): Promise<boolean> {
+    const offer = await this.findById(offerId, userId);
+    return (offer?.userId._id.equals(new Types.ObjectId(userId))) ?? false;
+  }
+
 }

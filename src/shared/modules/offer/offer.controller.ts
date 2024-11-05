@@ -13,7 +13,6 @@ import { ParamCityName } from './type/param-cityname.type.js';
 import { CommentService } from '../comment/comment-service.interface.js';
 import { CommentRdo } from '../comment/rdo/comment.rdo.js';
 import { CreateOfferDto } from './dto/create-offer.dto.js';
-import { Types } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
 import { CreateCommentDto } from '../comment/index.js';
 
@@ -86,11 +85,6 @@ export class OfferController extends BaseController{
 
   }
 
-  private async checkOwner(offerId: string, userId: string) {
-    const offer = await this.offerService.findById(offerId, userId);
-    return (offer?.userId._id.equals(new Types.ObjectId(userId)));
-  }
-
   public async index(
     { query, tokenPayload }: Request<unknown, unknown, unknown, RequestQuery>,
     res: Response
@@ -124,7 +118,7 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const {offerId} = params;
     const userId = tokenPayload.id;
-    const owner = await this.checkOwner(offerId, userId);
+    const owner = await this.offerService.checkOwner(offerId, userId);
     if (!owner) {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t update. You\'re not the owner', 'OfferController');
     }
@@ -138,7 +132,7 @@ export class OfferController extends BaseController{
   ): Promise<void> {
     const { offerId } = params;
     const userId = tokenPayload.id;
-    const owner = await this.checkOwner(offerId, userId);
+    const owner = await this.offerService.checkOwner(offerId, userId);
     if (!owner) {
       throw new HttpError(StatusCodes.BAD_REQUEST, 'Can\'t delete. You\'re not the owner', 'OfferController');
     }
@@ -152,13 +146,13 @@ export class OfferController extends BaseController{
     this.ok(res, fillDTO(IndexOfferRdo, result));
   }
 
-  public async getComments(req: Request, res: Response): Promise<void> {
-    const result = await this.commentService.findByOfferId(req.params.offerId);
+  public async getComments({ params }: Request<ParamOfferId>, res: Response): Promise<void> {
+    const result = await this.commentService.findByOfferId(params.offerId);
     this.ok(res, fillDTO(CommentRdo, result));
   }
 
   public async createComment(
-    {body, params, tokenPayload}: Request<Record<string, string>, Record<string, unknown>, CreateCommentDto>,
+    {body, params, tokenPayload}: Request<ParamOfferId, unknown, CreateCommentDto>,
     res: Response
   ): Promise<void> {
     const offerId = params.offerId;

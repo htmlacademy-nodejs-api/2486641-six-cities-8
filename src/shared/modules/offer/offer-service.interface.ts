@@ -16,4 +16,5 @@ export interface OfferService extends DocumentExists {
   addFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
   deleteFavorite(userId: string, offerId: string): Promise<DocumentType<OfferEntity> | null>;
   getAvgRating(offerId: string): Promise<number>;
+  checkOwner(offerId: string, userId: string): Promise<boolean>;
 }
