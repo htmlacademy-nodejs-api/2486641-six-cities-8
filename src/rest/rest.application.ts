@@ -9,8 +9,8 @@ import express, { Express } from 'express';
 import { Controller } from '../shared/libs/rest/index.js';
 import { ExceptionFilter } from '../shared/libs/rest/exception-filter/exception-filter.interface.js';
 import { ParseTokenMiddleware } from '../shared/libs/rest/middleware/parse-token.middleware.js';
-import { STATIC_FILES_ROUTE, STATIC_UPLOAD_ROUTE } from './index.js';
 import cors from 'cors';
+import { StaticRoutes } from './rest.constant.js';
 
 @injectable()
 export class RestApplication {
@@ -59,12 +59,12 @@ export class RestApplication {
 
     this.server.use(express.json());
     this.server.use(
-      STATIC_UPLOAD_ROUTE,
+      StaticRoutes.Upload,
       express.static(this.config.get('UPLOAD_DIRECTORY'))
     );
     this.server.use(
-      STATIC_FILES_ROUTE,
-      express.static(this.config.get('STATIC_DIRECTORY_PATH'))
+      StaticRoutes.Files,
+      express.static(this.config.get('STATIC_DIRECTORY'))
     );
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
     this.server.use(cors());
